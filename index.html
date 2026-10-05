@@ -1,1 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<title>TITAN AI</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    background: #02060b;
+    color: white;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.container {
+    width: 92%;
+    max-width: 600px;
+    text-align: center;
+}
+
+.orb {
+    width: 180px;
+    height: 180px;
+    margin: auto;
+    border: 3px solid #00d9ff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow:
+        0 0 25px #00d9ff,
+        0 0 80px #0066ff;
+    animation: pulse 2s infinite;
+}
+
+.core {
+    width: 75px;
+    height: 75px;
+    background: #00d9ff;
+    border-radius: 50%;
+    box-shadow:
+        0 0 30px #00d9ff,
+        0 0 70px #0066ff;
+}
+
+@keyframes pulse {
+    50% {
+        transform: scale(1.08);
+    }
+}
+
+h1 {
+    font-size: 42px;
+    letter-spacing: 10px;
+    margin: 25px 0 5px;
+}
+
+#status {
+    color: #70e7ff;
+}
+
+#mic {
+    width: 75px;
+    height: 75px;
+    margin: 20px;
+    border-radius: 50%;
+    border: 2px solid #00d9ff;
+    background: #06131c;
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+    box-shadow: 0 0 25px #00d9ff;
+}
+
+#mic:active {
+    transform: scale(0.9);
+}
+
+.language button {
+    padding: 10px 20px;
+    margin: 5px;
+    border-radius: 8px;
+    border: 1px solid #00d9ff;
+    background: #06131c;
+    color: white;
+}
+
+.box {
+    margin-top: 12px;
+    padding: 15px;
+    background: #061019;
+    border: 1px solid #12394a;
+    border-radius: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="orb">
+        <div class="core"></div>
+    </div>
+
+    <h1>TITAN</h1>
+
+    <p id="status">
+        Click microphone and speak
+    </p>
+
+    <div class="language">
+        <button onclick="setLanguage('en-US')">
+            English
+        </button>
+
+        <button onclick="setLanguage('bn-BD')">
+            বাংলা
+        </button>
+    </div>
+
+    <button id="mic" onclick="startListening()">
+        🎤
+    </button>
+
+    <div class="box" id="userText">
+        You: —
+    </div>
+
+    <div class="box" id="titanText">
+        TITAN: —
+    </div>
+
+</div>
+
+<script>
+
+const statusText =
+    document.getElementById("status");
+
+const userText =
+    document.getElementById("userText");
+
+const titanText =
+    document.getElementById("titanText");
+
+let currentLanguage = "en-US";
+
+const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+let recognition = null;
+
+if (SpeechRecognition) {
+
+    recognition = new SpeechRecognition();
+
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    recognition.onstart = function() {
+
+        statusText.innerText =
+            "Listening...";
+
+    };
+
+    recognition.onresult = function(event) {
+
+        const command =
+            event.results[0][0].transcript;
+
+        userText.innerText =
+            "You: " + command;
+
+        processCommand(command);
+    };
+
+    recognition.onerror = function() {
+
+        statusText.innerText =
+            "Microphone error. Try again.";
+
+    };
+
+    recognition.onend = function() {
+
+        statusText.innerText =
+            "Click microphone and speak";
+
+    };
+
+} else {
+
+    statusText.innerText =
+        "Speech recognition is not supported.";
+
+}
+
+function setLanguage(language) {
+
+    currentLanguage = language;
+
+    if (language === "bn-BD") {
+
+        speak(
+            "বাংলা ভাষা চালু হয়েছে।"
+        );
+
+    } else {
+
+        speak(
+            "English language activated."
+        );
+
+    }
+}
+
+function startListening() {
+
+    if (!recognition) {
+
+        alert(
+            "Your browser does not support voice recognition."
+        );
+
+        return;
+    }
+
+    recognition.lang =
+        currentLanguage;
+
+    recognition.start();
+}
+
+function processCommand(command) {
+
+    const text =
+        command.toLowerCase();
+
+    const bangla =
+        /[\u0980-\u09FF]/.test(command);
+
+    if (
+        text.includes("youtube") ||
+        text.includes("ইউটিউব")
+    ) {
+
+        if (bangla) {
+
+            reply(
+                "ঠিক আছে, ইউটিউব খুলছি।"
+            );
+
+        } else {
+
+            reply(
+                "Sure, opening YouTube."
+            );
+
+        }
+
+        window.open(
+            "https://www.youtube.com",
+            "_blank"
+        );
+
+        return;
+    }
+
+    if (
+        text.includes("google") ||
+        text.includes("গুগল")
+    ) {
+
+        if (bangla) {
+
+            reply(
+                "ঠিক আছে, গুগল খুলছি।"
+            );
+
+        } else {
+
+            reply(
+                "Sure, opening Google."
+            );
+
+        }
+
+        window.open(
+            "https://www.google.com",
+            "_blank"
+        );
+
+        return;
+    }
+
+    if (
+        text.includes("hello") ||
+        text.includes("hi") ||
+        text.includes("হ্যালো") ||
+        text.includes("হাই")
+    ) {
+
+        if (bangla) {
+
+            reply(
+                "হ্যালো! আমি TITAN।"
+            );
+
+        } else {
+
+            reply(
+                "Hello! I am TITAN."
+            );
+
+        }
+
+        return;
+    }
+
+    if (
+        text.includes("time") ||
+        text.includes("সময়") ||
+        text.includes("সময়") ||
+        text.includes("কয়টা")
+    ) {
+
+        const time =
+            new Date().toLocaleTimeString();
+
+        if (bangla) {
+
+            reply(
+                "এখন সময় " + time
+            );
+
+        } else {
+
+            reply(
+                "The current time is " + time
+            );
+
+        }
+
+        return;
+    }
+
+    if (bangla) {
+
+        reply(
+            "দুঃখিত, এই command এখনো আমি বুঝতে পারিনি।"
+        );
+
+    } else {
+
+        reply(
+            "Sorry, I don't understand that command yet."
+        );
+
+    }
+}
+
+function reply(message) {
+
+    titanText.innerText =
+        "TITAN: " + message;
+
+    speak(message);
+}
+
+function speak(message) {
+
+    speechSynthesis.cancel();
+
+    const speech =
+        new SpeechSynthesisUtterance(message);
+
+    if (
+        /[\u0980-\u09FF]/.test(message)
+    ) {
+
+        speech.lang = "bn-BD";
+
+    } else {
+
+        speech.lang = "en-US";
+
+    }
+
+    speech.rate = 0.95;
+    speech.pitch = 1;
+
+    speechSynthesis.speak(speech);
+}
+
+</script>
+
+</body>
+</html>
