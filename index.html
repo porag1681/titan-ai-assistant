@@ -1,107 +1,98 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>TITAN AI</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TITAN AI V2</title>
 
 <style>
-* {
-    box-sizing: border-box;
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  height:100vh;
+  background:#02060b;
+  color:white;
+  font-family:Arial,sans-serif;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  overflow:hidden;
 }
 
-body {
-    margin: 0;
-    height: 100vh;
-    background: #02060b;
-    color: white;
-    font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
+.container{
+  width:92%;
+  max-width:600px;
+  text-align:center;
 }
 
-.container {
-    width: 92%;
-    max-width: 600px;
-    text-align: center;
+.orb{
+  width:180px;
+  height:180px;
+  margin:auto;
+  border:3px solid #00d9ff;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 0 25px #00d9ff,0 0 80px #0066ff;
+  animation:pulse 2s infinite;
 }
 
-.orb {
-    width: 180px;
-    height: 180px;
-    margin: auto;
-    border: 3px solid #00d9ff;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow:
-        0 0 25px #00d9ff,
-        0 0 80px #0066ff;
-    animation: pulse 2s infinite;
+.core{
+  width:75px;
+  height:75px;
+  background:#00d9ff;
+  border-radius:50%;
+  box-shadow:0 0 30px #00d9ff,0 0 70px #0066ff;
 }
 
-.core {
-    width: 75px;
-    height: 75px;
-    background: #00d9ff;
-    border-radius: 50%;
-    box-shadow:
-        0 0 30px #00d9ff,
-        0 0 70px #0066ff;
+@keyframes pulse{
+  50%{transform:scale(1.08)}
 }
 
-@keyframes pulse {
-    50% {
-        transform: scale(1.08);
-    }
+h1{
+  font-size:42px;
+  letter-spacing:10px;
+  margin:25px 0 5px;
 }
 
-h1 {
-    font-size: 42px;
-    letter-spacing: 10px;
-    margin: 25px 0 5px;
+#status{
+  color:#70e7ff;
 }
 
-#status {
-    color: #70e7ff;
+#mic{
+  width:75px;
+  height:75px;
+  margin:20px;
+  border-radius:50%;
+  border:2px solid #00d9ff;
+  background:#06131c;
+  color:white;
+  font-size:30px;
+  cursor:pointer;
+  box-shadow:0 0 25px #00d9ff;
 }
 
-#mic {
-    width: 75px;
-    height: 75px;
-    margin: 20px;
-    border-radius: 50%;
-    border: 2px solid #00d9ff;
-    background: #06131c;
-    color: white;
-    font-size: 30px;
-    cursor: pointer;
-    box-shadow: 0 0 25px #00d9ff;
+#mic:active{
+  transform:scale(.9);
 }
 
-#mic:active {
-    transform: scale(0.9);
+.language button{
+  padding:10px 20px;
+  margin:5px;
+  border-radius:8px;
+  border:1px solid #00d9ff;
+  background:#06131c;
+  color:white;
 }
 
-.language button {
-    padding: 10px 20px;
-    margin: 5px;
-    border-radius: 8px;
-    border: 1px solid #00d9ff;
-    background: #06131c;
-    color: white;
-}
-
-.box {
-    margin-top: 12px;
-    padding: 15px;
-    background: #061019;
-    border: 1px solid #12394a;
-    border-radius: 10px;
+.box{
+  margin-top:12px;
+  padding:15px;
+  background:#061019;
+  border:1px solid #12394a;
+  border-radius:10px;
 }
 </style>
 </head>
@@ -110,300 +101,169 @@ h1 {
 
 <div class="container">
 
-    <div class="orb">
-        <div class="core"></div>
-    </div>
+  <div class="orb">
+    <div class="core"></div>
+  </div>
 
-    <h1>TITAN</h1>
+  <h1>TITAN</h1>
 
-    <p id="status">
-        Click microphone and speak
-    </p>
+  <p id="status">মাইক্রোফোন চাপুন এবং কথা বলুন</p>
 
-    <div class="language">
-        <button onclick="setLanguage('en-US')">
-            English
-        </button>
+  <div class="language">
+    <button onclick="setLanguage('bn-BD')">বাংলা</button>
+    <button onclick="setLanguage('en-US')">English</button>
+  </div>
 
-        <button onclick="setLanguage('bn-BD')">
-            বাংলা
-        </button>
-    </div>
+  <button id="mic" onclick="startListening()">🎤</button>
 
-    <button id="mic" onclick="startListening()">
-        🎤
-    </button>
-
-    <div class="box" id="userText">
-        You: —
-    </div>
-
-    <div class="box" id="titanText">
-        TITAN: —
-    </div>
+  <div class="box" id="userText">You: —</div>
+  <div class="box" id="titanText">TITAN: —</div>
 
 </div>
 
 <script>
 
-const statusText =
-    document.getElementById("status");
+const statusText=document.getElementById("status");
+const userText=document.getElementById("userText");
+const titanText=document.getElementById("titanText");
 
-const userText =
-    document.getElementById("userText");
+let currentLanguage="bn-BD";
 
-const titanText =
-    document.getElementById("titanText");
+const SpeechRecognition=
+  window.SpeechRecognition ||
+  window.webkitSpeechRecognition;
 
-let currentLanguage = "en-US";
+let recognition=null;
 
-const SpeechRecognition =
-    window.SpeechRecognition ||
-    window.webkitSpeechRecognition;
+if(SpeechRecognition){
 
-let recognition = null;
+  recognition=new SpeechRecognition();
 
-if (SpeechRecognition) {
+  recognition.continuous=false;
+  recognition.interimResults=false;
 
-    recognition = new SpeechRecognition();
+  recognition.onstart=function(){
+    statusText.innerText="শুনছি...";
+  };
 
-    recognition.continuous = false;
-    recognition.interimResults = false;
+  recognition.onresult=function(event){
 
-    recognition.onstart = function() {
+    const command=
+      event.results[0][0].transcript;
 
-        statusText.innerText =
-            "Listening...";
+    userText.innerText="You: "+command;
 
-    };
+    askTitan(command);
+  };
 
-    recognition.onresult = function(event) {
+  recognition.onerror=function(){
+    statusText.innerText="Microphone error";
+  };
 
-        const command =
-            event.results[0][0].transcript;
+  recognition.onend=function(){
+    statusText.innerText="মাইক্রোফোন চাপুন এবং কথা বলুন";
+  };
 
-        userText.innerText =
-            "You: " + command;
+}else{
 
-        processCommand(command);
-    };
-
-    recognition.onerror = function() {
-
-        statusText.innerText =
-            "Microphone error. Try again.";
-
-    };
-
-    recognition.onend = function() {
-
-        statusText.innerText =
-            "Click microphone and speak";
-
-    };
-
-} else {
-
-    statusText.innerText =
-        "Speech recognition is not supported.";
-
+  statusText.innerText=
+    "এই browser voice recognition support করে না।";
 }
 
-function setLanguage(language) {
 
-    currentLanguage = language;
+function setLanguage(language){
 
-    if (language === "bn-BD") {
+  currentLanguage=language;
 
-        speak(
-            "বাংলা ভাষা চালু হয়েছে।"
-        );
-
-    } else {
-
-        speak(
-            "English language activated."
-        );
-
-    }
+  if(language==="bn-BD"){
+    speak("বাংলা ভাষা চালু হয়েছে।");
+  }else{
+    speak("English language activated.");
+  }
 }
 
-function startListening() {
 
-    if (!recognition) {
+function startListening(){
 
-        alert(
-            "Your browser does not support voice recognition."
-        );
+  if(!recognition){
+    alert("Your browser does not support voice recognition.");
+    return;
+  }
 
-        return;
-    }
+  recognition.lang=currentLanguage;
 
-    recognition.lang =
-        currentLanguage;
-
-    recognition.start();
+  recognition.start();
 }
 
-function processCommand(command) {
 
-    const text =
-        command.toLowerCase();
+async function askTitan(message){
 
-    const bangla =
-        /[\u0980-\u09FF]/.test(command);
+  statusText.innerText="TITAN চিন্তা করছে...";
 
-    if (
-        text.includes("youtube") ||
-        text.includes("ইউটিউব")
-    ) {
+  titanText.innerText="TITAN: চিন্তা করছি...";
 
-        if (bangla) {
+  try{
 
-            reply(
-                "ঠিক আছে, ইউটিউব খুলছি।"
-            );
+    const response=await fetch(
+      "https://titan-ai-assistant.vercel.app/api/chat",
+      {
+        method:"POST",
 
-        } else {
+        headers:{
+          "Content-Type":"application/json"
+        },
 
-            reply(
-                "Sure, opening YouTube."
-            );
+        body:JSON.stringify({
+          message:message
+        })
+      }
+    );
 
-        }
+    const data=await response.json();
 
-        window.open(
-            "https://www.youtube.com",
-            "_blank"
-        );
-
-        return;
+    if(!response.ok){
+      throw new Error(data.error || "API error");
     }
 
-    if (
-        text.includes("google") ||
-        text.includes("গুগল")
-    ) {
+    const reply=data.reply;
 
-        if (bangla) {
+    titanText.innerText="TITAN: "+reply;
 
-            reply(
-                "ঠিক আছে, গুগল খুলছি।"
-            );
+    speak(reply);
 
-        } else {
+  }catch(error){
 
-            reply(
-                "Sure, opening Google."
-            );
+    console.error(error);
 
-        }
+    titanText.innerText=
+      "TITAN: AI-এর সাথে সংযোগ করা যাচ্ছে না।";
 
-        window.open(
-            "https://www.google.com",
-            "_blank"
-        );
-
-        return;
-    }
-
-    if (
-        text.includes("hello") ||
-        text.includes("hi") ||
-        text.includes("হ্যালো") ||
-        text.includes("হাই")
-    ) {
-
-        if (bangla) {
-
-            reply(
-                "হ্যালো! আমি TITAN।"
-            );
-
-        } else {
-
-            reply(
-                "Hello! I am TITAN."
-            );
-
-        }
-
-        return;
-    }
-
-    if (
-        text.includes("time") ||
-        text.includes("সময়") ||
-        text.includes("সময়") ||
-        text.includes("কয়টা")
-    ) {
-
-        const time =
-            new Date().toLocaleTimeString();
-
-        if (bangla) {
-
-            reply(
-                "এখন সময় " + time
-            );
-
-        } else {
-
-            reply(
-                "The current time is " + time
-            );
-
-        }
-
-        return;
-    }
-
-    if (bangla) {
-
-        reply(
-            "দুঃখিত, এই command এখনো আমি বুঝতে পারিনি।"
-        );
-
-    } else {
-
-        reply(
-            "Sorry, I don't understand that command yet."
-        );
-
-    }
+    speak(
+      currentLanguage==="bn-BD"
+      ? "দুঃখিত, AI-এর সাথে সংযোগ করা যাচ্ছে না।"
+      : "Sorry, I cannot connect to the AI."
+    );
+  }
 }
 
-function reply(message) {
 
-    titanText.innerText =
-        "TITAN: " + message;
+function speak(message){
 
-    speak(message);
-}
+  speechSynthesis.cancel();
 
-function speak(message) {
+  const speech=
+    new SpeechSynthesisUtterance(message);
 
-    speechSynthesis.cancel();
+  if(/[\u0980-\u09FF]/.test(message)){
+    speech.lang="bn-BD";
+  }else{
+    speech.lang="en-US";
+  }
 
-    const speech =
-        new SpeechSynthesisUtterance(message);
+  speech.rate=.95;
+  speech.pitch=1;
 
-    if (
-        /[\u0980-\u09FF]/.test(message)
-    ) {
-
-        speech.lang = "bn-BD";
-
-    } else {
-
-        speech.lang = "en-US";
-
-    }
-
-    speech.rate = 0.95;
-    speech.pitch = 1;
-
-    speechSynthesis.speak(speech);
+  speechSynthesis.speak(speech);
 }
 
 </script>
