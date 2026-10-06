@@ -2,474 +2,1451 @@
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TITAN AI</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>TITAN AI V7</title>
 
 <style>
-*{box-sizing:border-box}
-
-body{
-  margin:0;
-  height:100vh;
-  background:#02060b;
-  color:white;
-  font-family:Arial,sans-serif;
-  display:flex;
-  justify-content:center;
-  align-items:center;
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent
 }
 
-.box{
-  width:92%;
-  max-width:600px;
-  padding:35px 20px;
-  text-align:center;
-  border:1px solid #18334a;
-  border-radius:25px;
-  background:#071019;
-  box-shadow:0 0 40px #001a2b;
+:root{
+  --c:#00e5ff;
+  --c2:#0a6cff;
+  --bg:#02060b
+}
+
+html,body{
+  margin:0;
+  min-height:100%;
+}
+
+body{
+  background:
+    radial-gradient(circle at 50% 28%,rgba(0,140,255,.22),transparent 55%),
+    linear-gradient(rgba(0,229,255,.05) 1px,transparent 1px) 0 0/34px 34px,
+    linear-gradient(90deg,rgba(0,229,255,.05) 1px,transparent 1px) 0 0/34px 34px,
+    var(--bg);
+  color:#fff;
+  font-family:"Segoe UI",Arial,sans-serif;
+  overflow-x:hidden;
+}
+
+body::after{
+  content:"";
+  position:fixed;
+  left:0;
+  right:0;
+  height:120px;
+  top:-120px;
+  background:linear-gradient(
+    transparent,
+    rgba(0,229,255,.07),
+    transparent
+  );
+  animation:scan 6s linear infinite;
+  pointer-events:none;
+  z-index:1
+}
+
+@keyframes scan{
+  to{top:100%}
+}
+
+.side{
+  position:fixed;
+  top:0;
+  bottom:0;
+  width:72px;
+  overflow:hidden;
+  z-index:0;
+  font:9px/1.55 "Courier New",monospace;
+  color:var(--c);
+  opacity:.28;
+  pointer-events:none;
+  -webkit-mask-image:linear-gradient(transparent,#000 12%,#000 88%,transparent);
+  mask-image:linear-gradient(transparent,#000 12%,#000 88%,transparent)
+}
+
+.side.l{left:5px}
+.side.r{right:5px;text-align:right}
+
+.side .col{
+  white-space:pre
+}
+
+.wrap{
+  position:relative;
+  z-index:2;
+  max-width:520px;
+  margin:auto;
+  padding:14px 58px 35px
+}
+
+.top{
+  display:flex;
+  justify-content:space-between;
+  font:11px "Courier New",monospace;
+  letter-spacing:2px;
+  color:#7fdcff
+}
+
+.top b{color:var(--c)}
+
+.orbwrap{
+  position:relative;
+  width:190px;
+  height:190px;
+  margin:25px auto 5px;
+  cursor:pointer
+}
+
+.ring{
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  border:2px dashed rgba(0,229,255,.5);
+  animation:spin 14s linear infinite
+}
+
+.ring.r2{
+  inset:14px;
+  border:2px solid transparent;
+  border-top-color:var(--c);
+  border-bottom-color:var(--c2);
+  animation:spin 3.5s linear infinite reverse
+}
+
+.ring.r3{
+  inset:30px;
+  border:1px solid rgba(0,229,255,.35);
+  animation:spin 22s linear infinite
+}
+
+@keyframes spin{
+  to{transform:rotate(360deg)}
+}
+
+.core{
+  position:absolute;
+  inset:60px;
+  border-radius:50%;
+  background:radial-gradient(
+    circle at 35% 30%,
+    #aef6ff,
+    var(--c) 45%,
+    var(--c2)
+  );
+  box-shadow:
+    0 0 30px var(--c),
+    0 0 90px var(--c2);
+  animation:pulse 2.2s ease-in-out infinite
+}
+
+@keyframes pulse{
+  50%{transform:scale(1.1)}
+}
+
+.off .core{
+  filter:grayscale(1) brightness(.5);
+  box-shadow:none;
+  animation:none
+}
+
+.off .ring{
+  animation-play-state:paused;
+  opacity:.4
 }
 
 h1{
-  font-size:48px;
-  letter-spacing:8px;
-  margin:10px 0;
+  font-size:34px;
+  letter-spacing:12px;
+  margin:14px 0 2px;
+  text-align:center;
+  font-weight:600;
+  text-shadow:0 0 18px rgba(0,229,255,.6)
 }
 
-#status{
-  margin:20px 0;
-  color:#00eaff;
-  font-size:18px;
+.sub{
+  text-align:center;
+  font-size:11px;
+  letter-spacing:4px;
+  color:#59b9d6;
+  margin-bottom:10px
 }
 
-#heard{
-  min-height:50px;
-  margin:20px 0;
-  color:#aaa;
-}
-
-button{
-  border:0;
+.pill{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  margin:10px auto 12px;
+  padding:8px 14px;
+  max-width:360px;
+  border:1px solid rgba(0,229,255,.4);
   border-radius:30px;
-  padding:15px 28px;
-  font-size:17px;
-  background:#00d9ff;
-  color:#001018;
-  font-weight:bold;
+  background:rgba(0,229,255,.07);
+  font-size:13px;
+  color:#aef0ff;
+  text-align:center
+}
+
+.dot{
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  background:#2cff9a;
+  box-shadow:0 0 10px #2cff9a
+}
+
+.off .dot{
+  background:#ff5a5a;
+  box-shadow:0 0 10px #ff5a5a
+}
+
+.chips{
+  display:flex;
+  gap:8px;
+  justify-content:center;
+  flex-wrap:wrap
+}
+
+.chip{
+  font:10px "Courier New",monospace;
+  padding:5px 9px;
+  border:1px solid rgba(0,229,255,.3);
+  border-radius:6px;
+  color:#8fdcf5;
+  background:rgba(0,0,0,.35)
+}
+
+.chip b{color:#fff}
+
+.box{
+  position:relative;
+  margin-top:12px;
+  padding:14px 16px;
+  background:rgba(6,20,32,.72);
+  border:1px solid rgba(0,229,255,.22);
+  border-radius:12px;
+  backdrop-filter:blur(6px);
+  word-wrap:break-word;
+  line-height:1.55;
+  font-size:15px
+}
+
+.tag{
+  display:block;
+  font:10px "Courier New",monospace;
+  letter-spacing:3px;
+  color:var(--c);
+  margin-bottom:4px
+}
+
+.hint{
+  margin-top:16px;
+  font-size:12px;
+  color:#6fa3b7;
+  line-height:1.7;
+  text-align:center
+}
+
+#startBtn{
+  display:block;
+  margin:18px auto 0;
+  padding:12px 25px;
+  border:1px solid var(--c);
+  border-radius:10px;
+  background:rgba(0,229,255,.08);
+  color:#fff;
+  font-size:15px;
+  cursor:pointer;
+}
+
+#startBtn:active{
+  transform:scale(.97)
+}
+
+#popup{
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(
+      circle at 50% 35%,
+      rgba(0,90,200,.35),
+      rgba(2,6,11,.97) 70%
+    );
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  z-index:99;
+  padding:24px;
+  text-align:center
+}
+
+#popup.show{
+  display:flex
+}
+
+#popup .orbwrap{
+  margin:0;
+  width:150px;
+  height:150px
+}
+
+#popup .core{
+  inset:48px
+}
+
+#pTitle{
+  font-size:24px;
+  letter-spacing:10px;
+  margin:18px 0 6px
+}
+
+#pUser{
+  color:#70e7ff;
+  min-height:24px;
+  max-width:520px;
+  font-size:15px
+}
+
+#pText{
+  max-width:520px;
+  font-size:19px;
+  line-height:1.55;
+  color:#e2f8ff;
+  min-height:60px;
+  margin-top:6px
+}
+
+#pLink{
+  display:none;
+  margin-top:14px;
+  padding:12px 22px;
+  border-radius:10px;
+  background:var(--c);
+  color:#02060b;
+  text-decoration:none;
+  font-weight:bold
+}
+
+#pClose{
+  margin-top:20px;
+  padding:10px 26px;
+  border-radius:10px;
+  border:1px solid var(--c);
+  background:transparent;
+  color:#fff;
+  font-size:15px
 }
 </style>
 </head>
 
-<body>
+<body class="off" id="body">
 
-<div class="box">
-  <h1>TITAN</h1>
+<div class="side l">
+  <div class="col" id="colL"></div>
+</div>
 
-  <div id="status">Starting...</div>
+<div class="side r">
+  <div class="col" id="colR"></div>
+</div>
 
-  <div id="heard">
-    Microphone চালু হচ্ছে...
+<div class="wrap">
+
+  <div class="top">
+    <span>TITAN<b>//</b>CORE V7</span>
+    <span id="clock">--:--:--</span>
   </div>
 
-  <button onclick="startListening()">
-    🎤 Start TITAN
+  <div class="orbwrap" id="orb">
+    <div class="ring"></div>
+    <div class="ring r2"></div>
+    <div class="ring r3"></div>
+    <div class="core"></div>
+  </div>
+
+  <h1>TITAN</h1>
+
+  <div class="sub">
+    HANDS-FREE AI ASSISTANT
+  </div>
+
+  <div class="pill">
+    <span class="dot"></span>
+    <span id="status">Start চাপুন</span>
+  </div>
+
+  <div class="chips">
+
+    <span class="chip">
+      MIC <b id="chMic">OFF</b>
+    </span>
+
+    <span class="chip">
+      LANG <b id="chLang">AUTO</b>
+    </span>
+
+  </div>
+
+  <div class="box">
+    <span class="tag">YOU</span>
+    <span id="userText">—</span>
+  </div>
+
+  <div class="box">
+    <span class="tag">TITAN</span>
+    <span id="titanText">—</span>
+  </div>
+
+  <button id="startBtn">
+    🎤 START TITAN
   </button>
+
+  <div class="hint">
+    প্রথমবার START TITAN চাপুন<br>
+    তারপর “TITAN” বলুন<br>
+    বাংলা বা English—দুই ভাষাই কাজ করবে
+  </div>
+
 </div>
+
+
+<div id="popup">
+
+  <div class="orbwrap">
+    <div class="ring"></div>
+    <div class="ring r2"></div>
+    <div class="ring r3"></div>
+    <div class="core"></div>
+  </div>
+
+  <div id="pTitle">TITAN</div>
+
+  <div id="pUser"></div>
+
+  <div id="pText"></div>
+
+  <a
+    id="pLink"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    লিংক খুলুন
+  </a>
+
+  <button id="pClose">
+    ✕ বন্ধ করুন
+  </button>
+
+</div>
+
 
 <script>
 
 const API_URL = "/api/chat";
 
-const statusBox = document.getElementById("status");
-const heardBox = document.getElementById("heard");
+const $ = id => document.getElementById(id);
+
+const statusBox = $("status");
+const userText = $("userText");
+const titanText = $("titanText");
+
+const popup = $("popup");
+const pUser = $("pUser");
+const pText = $("pText");
+const pLink = $("pLink");
+
+const body = $("body");
+const startBtn = $("startBtn");
 
 let recognition = null;
-let listening = false;
-let active = false;
+
+let assistantStarted = false;
+let waitingForWake = true;
+let listeningForCommand = false;
+
+let speaking = false;
+let restarting = false;
+
+let currentLanguage = "en-US";
+
+const SpeechRecognition =
+  window.SpeechRecognition ||
+  window.webkitSpeechRecognition;
+
+
+/* =========================
+   LANGUAGE
+========================= */
 
 function isBangla(text){
+
   return /[\u0980-\u09FF]/.test(text);
+
 }
+
 
 function detectLanguage(text){
-  return isBangla(text) ? "bn-BD" : "en-US";
+
+  return isBangla(text)
+    ? "bn-BD"
+    : "en-US";
+
 }
 
-/* SPEAK */
 
-function speak(text){
+function setLanguage(text){
 
-  if(!("speechSynthesis" in window)){
-    return;
-  }
+  currentLanguage =
+    detectLanguage(text);
 
-  speechSynthesis.cancel();
+  $("chLang").textContent =
+    currentLanguage === "bn-BD"
+      ? "BN"
+      : "EN";
 
-  const u = new SpeechSynthesisUtterance(text);
-
-  u.lang = isBangla(text) ? "bn-BD" : "en-US";
-  u.rate = 1;
-  u.pitch = 1;
-
-  speechSynthesis.speak(u);
 }
 
-/* SPEECH SETUP */
 
-function setupRecognition(){
+function sayText(bn,en){
 
-  const SpeechRecognition =
-    window.SpeechRecognition ||
-    window.webkitSpeechRecognition;
+  return currentLanguage === "bn-BD"
+    ? bn
+    : en;
+
+}
+
+
+/* =========================
+   DECORATION
+========================= */
+
+const lines = [
+  "core.init()",
+  "voice=true",
+  "wakeword=titan",
+  "lang=auto",
+  "api=secure",
+  "audio=ready",
+  "state=ready"
+];
+
+$("colL").textContent =
+  (lines.join("\n") + "\n").repeat(10);
+
+$("colR").textContent =
+  (lines.slice().reverse().join("\n") + "\n").repeat(10);
+
+
+setInterval(()=>{
+
+  $("clock").textContent =
+    new Date().toLocaleTimeString("en-GB");
+
+},1000);
+
+
+/* =========================
+   SPEECH SETUP
+========================= */
+
+function setupSpeech(){
 
   if(!SpeechRecognition){
 
-    statusBox.innerText =
-      "❌ Voice support নেই";
+    statusBox.textContent =
+      "এই browser voice support করে না";
 
-    heardBox.innerText =
-      "Chrome browser দিয়ে চেষ্টা করো";
+    return false;
+  }
+
+
+  recognition =
+    new SpeechRecognition();
+
+
+  recognition.continuous = false;
+
+  recognition.interimResults = false;
+
+  recognition.maxAlternatives = 1;
+
+
+  recognition.onstart = function(){
+
+    restarting = false;
+
+    $("chMic").textContent =
+      "ON";
+
+    statusBox.textContent =
+      waitingForWake
+        ? "শুনছি—TITAN বলুন"
+        : "শুনছি...";
+
+  };
+
+
+  recognition.onresult =
+    function(event){
+
+      const result =
+        event.results[
+          event.resultIndex
+        ];
+
+      if(!result || !result.isFinal)
+        return;
+
+
+      const text =
+        result[0]
+          .transcript
+          .trim();
+
+
+      if(!text)
+        return;
+
+
+      console.log(
+        "TITAN heard:",
+        text
+      );
+
+
+      processSpeech(text);
+
+    };
+
+
+  recognition.onerror =
+    function(event){
+
+      console.log(
+        "Speech error:",
+        event.error
+      );
+
+
+      $("chMic").textContent =
+        "OFF";
+
+
+      if(
+        event.error === "not-allowed" ||
+        event.error === "service-not-allowed"
+      ){
+
+        statusBox.textContent =
+          "Microphone Allow করুন";
+
+        assistantStarted = false;
+
+        return;
+      }
+
+
+      if(
+        event.error === "aborted"
+      ){
+
+        return;
+      }
+
+
+      if(
+        assistantStarted &&
+        !speaking
+      ){
+
+        setTimeout(
+          listen,
+          700
+        );
+
+      }
+
+    };
+
+
+  recognition.onend =
+    function(){
+
+      restarting = false;
+
+      $("chMic").textContent =
+        "OFF";
+
+
+      /*
+        Speech শেষ হলে সঙ্গে সঙ্গে
+        restart করছি না।
+
+        এতে TITAN নিজের voice শুনে
+        loop করবে না।
+      */
+
+      if(
+        assistantStarted &&
+        !speaking
+      ){
+
+        setTimeout(
+          listen,
+          600
+        );
+
+      }
+
+    };
+
+
+  return true;
+
+}
+
+
+/* =========================
+   LISTEN
+========================= */
+
+function listen(){
+
+  if(
+    !assistantStarted ||
+    speaking ||
+    restarting ||
+    !recognition
+  ){
 
     return;
   }
 
-  recognition = new SpeechRecognition();
 
-  recognition.continuous = true;
-  recognition.interimResults = true;
+  restarting = true;
 
-  recognition.lang = "en-US";
 
-  recognition.onstart = function(){
+  try{
 
-    listening = true;
+    recognition.lang =
+      waitingForWake
+        ? "en-US"
+        : currentLanguage;
 
-    statusBox.innerText =
-      "🎤 Listening...";
 
-    heardBox.innerText =
-      "TITAN বলো...";
-  };
+    recognition.start();
 
-  recognition.onresult = function(event){
+  }catch(error){
 
-    let finalText = "";
-    let interimText = "";
+    restarting = false;
 
-    for(
-      let i = event.resultIndex;
-      i < event.results.length;
-      i++
-    ){
+    console.log(error);
 
-      const text =
-        event.results[i][0].transcript;
+    setTimeout(
+      listen,
+      1000
+    );
 
-      if(event.results[i].isFinal){
-        finalText += text;
-      }else{
-        interimText += text;
-      }
-    }
+  }
 
-    heardBox.innerText =
-      finalText || interimText;
+}
 
-    if(finalText){
 
-      recognition.lang =
-        detectLanguage(finalText);
+/* =========================
+   PROCESS SPEECH
+========================= */
 
-      processVoice(finalText.trim());
-    }
-  };
+function processSpeech(text){
 
-  recognition.onerror = function(event){
+  console.log(
+    "Processing:",
+    text
+  );
 
-    console.log("Speech error:",event.error);
 
-    if(event.error === "not-allowed"){
+  /* Wake mode */
 
-      statusBox.innerText =
-        "❌ Microphone blocked";
+  if(waitingForWake){
 
-      heardBox.innerText =
-        "Browser settings থেকে Microphone Allow করো";
+    const wake =
+      /\b(titan|tytan|tighten)\b|টাইটান|টাইটেন|টাইটন/i
+        .test(text);
+
+
+    if(!wake){
+
+      listen();
 
       return;
     }
 
-    statusBox.innerText =
-      "⚠️ Voice error";
 
-  };
+    /*
+      TITAN পাওয়া গেছে।
+      এখন শুধু command mode।
+    */
 
-  recognition.onend = function(){
+    waitingForWake = false;
 
-    listening = false;
+    listeningForCommand = true;
 
-    if(window.titanListening){
 
-      setTimeout(function(){
-
-        try{
-          recognition.start();
-        }catch(e){}
-
-      },700);
-    }
-  };
-}
-
-/* START */
-
-function startListening(){
-
-  if(!recognition){
-    setupRecognition();
-  }
-
-  if(!recognition){
-    return;
-  }
-
-  window.titanListening = true;
-
-  active = false;
-
-  try{
-
-    recognition.start();
-
-    statusBox.innerText =
-      "🎤 Listening...";
-
-  }catch(error){
-
-    console.log(error);
-
-  }
-}
-
-/* VOICE COMMAND */
-
-function processVoice(text){
-
-  const lower = text.toLowerCase();
-
-  const titanWords =
-    lower.includes("titan") ||
-    lower.includes("tytan") ||
-    lower.includes("টাইটান") ||
-    lower.includes("টাইটেন") ||
-    lower.includes("টাইটন");
-
-  /* TITAN না বলা পর্যন্ত অপেক্ষা */
-
-  if(!active){
-
-    if(titanWords){
-
-      active = true;
-
-      statusBox.innerText =
-        "🟢 TITAN Active";
-
-      speak(
-        isBangla(text)
+    const answer =
+      isBangla(text)
         ? "জি, বলুন।"
-        : "Yes, tell me."
-      );
-    }
+        : "Yes, tell me.";
 
-    return;
-  }
 
-  /* TITAN */
+    setLanguage(text);
 
-  if(
-    lower === "titan" ||
-    lower === "tytan" ||
-    lower === "টাইটান" ||
-    lower === "টাইটেন" ||
-    lower === "টাইটন"
-  ){
+    showPopup(
+      text,
+      answer
+    );
+
+
+    /*
+      গুরুত্বপূর্ণ:
+      TITAN-এর voice শেষ না হওয়া পর্যন্ত
+      microphone OFF থাকবে।
+    */
 
     speak(
+      answer,
+      function(){
+
+        listeningForCommand = true;
+
+        setTimeout(
+          listen,
+          300
+        );
+
+      }
+    );
+
+
+    return;
+  }
+
+
+  /* Command mode */
+
+  if(listeningForCommand){
+
+    listeningForCommand = false;
+
+    handleCommand(text);
+
+  }
+
+}
+
+
+/* =========================
+   POPUP
+========================= */
+
+function showPopup(user,answer){
+
+  popup.classList.add("show");
+
+  pUser.textContent =
+    user || "";
+
+  pText.textContent =
+    answer || "";
+
+  pLink.style.display =
+    "none";
+
+}
+
+
+/* =========================
+   SPEAK
+========================= */
+
+function speak(text,callback){
+
+  /*
+    Recognition পুরো বন্ধ।
+    TITAN নিজের কথা শুনবে না।
+  */
+
+  speaking = true;
+
+  if(recognition){
+
+    try{
+      recognition.abort();
+    }catch(e){}
+
+  }
+
+
+  $("chMic").textContent =
+    "OFF";
+
+
+  speechSynthesis.cancel();
+
+
+  const utterance =
+    new SpeechSynthesisUtterance(
+      text
+    );
+
+
+  utterance.lang =
+    isBangla(text)
+      ? "bn-BD"
+      : "en-US";
+
+
+  utterance.rate = 0.95;
+
+  utterance.pitch = 1;
+
+
+  let done = false;
+
+
+  function finish(){
+
+    if(done)
+      return;
+
+    done = true;
+
+    speaking = false;
+
+    $("chMic").textContent =
+      "OFF";
+
+
+    if(callback){
+
+      setTimeout(
+        callback,
+        350
+      );
+
+    }
+
+  }
+
+
+  utterance.onend =
+    finish;
+
+  utterance.onerror =
+    finish;
+
+
+  speechSynthesis.speak(
+    utterance
+  );
+
+}
+
+
+/* =========================
+   START
+========================= */
+
+function startAssistant(){
+
+  if(assistantStarted)
+    return;
+
+
+  if(!recognition){
+
+    const ok =
+      setupSpeech();
+
+    if(!ok)
+      return;
+
+  }
+
+
+  assistantStarted = true;
+
+  waitingForWake = true;
+
+  listeningForCommand = false;
+
+  body.classList.remove("off");
+
+
+  startBtn.textContent =
+    "🟢 TITAN ACTIVE";
+
+
+  statusBox.textContent =
+    "শুনছি—“TITAN” বলুন";
+
+
+  /*
+    User button চাপার পরেই
+    microphone চালু হবে।
+  */
+
+  listen();
+
+}
+
+
+/* =========================
+   STOP
+========================= */
+
+function stopAssistant(){
+
+  assistantStarted = false;
+
+  waitingForWake = true;
+
+  listeningForCommand = false;
+
+  speaking = false;
+
+
+  if(recognition){
+
+    try{
+      recognition.abort();
+    }catch(e){}
+
+  }
+
+
+  speechSynthesis.cancel();
+
+
+  body.classList.add("off");
+
+  startBtn.textContent =
+    "🎤 START TITAN";
+
+  statusBox.textContent =
+    "বন্ধ";
+
+  $("chMic").textContent =
+    "OFF";
+
+}
+
+
+/* =========================
+   START BUTTON
+========================= */
+
+startBtn.onclick =
+  function(){
+
+    if(assistantStarted){
+
+      stopAssistant();
+
+    }else{
+
+      startAssistant();
+
+    }
+
+  };
+
+
+/* =========================
+   COMMANDS
+========================= */
+
+function handleCommand(text){
+
+  userText.textContent =
+    text;
+
+  pUser.textContent =
+    text;
+
+
+  setLanguage(text);
+
+
+  const lower =
+    text.toLowerCase();
+
+
+  /* Creator */
+
+  if(
+    lower.includes("who created you") ||
+    lower.includes("who is your creator") ||
+    lower.includes("your creator") ||
+    lower.includes("তোমাকে কে বানিয়েছে") ||
+    lower.includes("তোমার ক্রিয়েটর") ||
+    lower.includes("তোমার creator")
+  ){
+
+    const answer =
       isBangla(text)
-      ? "জি, বলুন।"
-      : "Yes, tell me."
+        ? "আমার creator হলো Nur Nobi।"
+        : "My creator is Nur Nobi.";
+
+
+    titanText.textContent =
+      answer;
+
+    pText.textContent =
+      answer;
+
+
+    speak(
+      answer,
+      function(){
+
+        waitingForWake = true;
+
+        setTimeout(
+          listen,
+          400
+        );
+
+      }
     );
 
     return;
   }
 
-  /* CREATOR */
 
-  if(
-    lower.includes("who created you") ||
-    lower.includes("who is your creator") ||
-    lower.includes("তোমাকে কে বানিয়েছে") ||
-    lower.includes("তোমার creator কে") ||
-    lower.includes("কে বানিয়েছে")
-  ){
-
-    const answer =
-      isBangla(text)
-      ? "আমার creator হলো Nur Nobi।"
-      : "My creator is Nur Nobi.";
-
-    heardBox.innerText = answer;
-    speak(answer);
-
-    return;
-  }
-
-  /* YOUTUBE */
+  /* YouTube */
 
   if(
     lower.includes("youtube") ||
     lower.includes("ইউটিউব")
   ){
 
-    let query = text
-      .replace(/titan/gi,"")
-      .replace(/tytan/gi,"")
-      .replace(/youtube/gi,"")
-      .replace(/ইউটিউব/g,"")
-      .replace(/search/gi,"")
-      .replace(/খুঁজো/g,"")
-      .replace(/সার্চ/g,"")
-      .trim();
+    let query =
+      text
+        .replace(/titan/gi,"")
+        .replace(/tytan/gi,"")
+        .replace(/youtube/gi,"")
+        .replace(/ইউটিউব/g,"")
+        .replace(/সার্চ/gi,"")
+        .replace(/search/gi,"")
+        .replace(/খুঁজো/g,"")
+        .trim();
+
 
     if(!query){
-      query = "trending videos";
+
+      query =
+        "trending videos";
+
     }
 
-    window.open(
+
+    const url =
       "https://www.youtube.com/results?search_query=" +
-      encodeURIComponent(query),
-      "_blank"
-    );
+      encodeURIComponent(query);
+
+
+    pLink.href =
+      url;
+
+    pLink.textContent =
+      "YouTube খুলুন";
+
+    pLink.style.display =
+      "inline-block";
+
+
+    const answer =
+      isBangla(text)
+        ? "YouTube-এ " + query + " খুঁজছি।"
+        : "Searching YouTube for " + query + ".";
+
+
+    titanText.textContent =
+      answer;
+
+    pText.textContent =
+      answer;
+
 
     speak(
-      isBangla(text)
-      ? "ইউটিউবে সার্চ করছি।"
-      : "Searching YouTube."
+      answer,
+      function(){
+
+        waitingForWake = true;
+
+        setTimeout(
+          listen,
+          400
+        );
+
+      }
     );
+
 
     return;
   }
 
-  /* GOOGLE */
+
+  /* Google */
 
   if(
     lower.includes("google") ||
     lower.includes("গুগল")
   ){
 
-    let query = text
-      .replace(/titan/gi,"")
-      .replace(/google/gi,"")
-      .replace(/গুগল/g,"")
-      .replace(/search/gi,"")
-      .replace(/খুঁজো/g,"")
-      .replace(/সার্চ/g,"")
-      .trim();
+    let query =
+      text
+        .replace(/titan/gi,"")
+        .replace(/google/gi,"")
+        .replace(/গুগল/g,"")
+        .replace(/search/gi,"")
+        .replace(/সার্চ/g,"")
+        .replace(/খুঁজো/g,"")
+        .trim();
+
 
     if(!query){
-      query = "Google";
+
+      query =
+        "Google";
+
     }
 
-    window.open(
+
+    const url =
       "https://www.google.com/search?q=" +
-      encodeURIComponent(query),
-      "_blank"
-    );
+      encodeURIComponent(query);
+
+
+    pLink.href =
+      url;
+
+    pLink.textContent =
+      "Google খুলুন";
+
+    pLink.style.display =
+      "inline-block";
+
+
+    const answer =
+      isBangla(text)
+        ? "গুগলে সার্চ করছি।"
+        : "Searching Google.";
+
+
+    titanText.textContent =
+      answer;
+
+    pText.textContent =
+      answer;
+
 
     speak(
-      isBangla(text)
-      ? "গুগলে সার্চ করছি।"
-      : "Searching Google."
+      answer,
+      function(){
+
+        waitingForWake = true;
+
+        setTimeout(
+          listen,
+          400
+        );
+
+      }
     );
+
 
     return;
   }
 
+
   /* AI */
 
   askAI(text);
+
 }
 
-/* AI */
+
+/* =========================
+   AI
+========================= */
 
 async function askAI(message){
 
-  statusBox.innerText =
-    "🤖 TITAN thinking...";
+  statusBox.textContent =
+    "TITAN ভাবছে...";
+
 
   try{
 
     const response =
-      await fetch(API_URL,{
-        method:"POST",
+      await fetch(
+        API_URL,
+        {
+          method:"POST",
 
-        headers:{
-          "Content-Type":"application/json"
-        },
+          headers:{
+            "Content-Type":
+              "application/json"
+          },
 
-        body:JSON.stringify({
-          message:message,
-          language:detectLanguage(message)
-        })
-      });
+          body:JSON.stringify({
+
+            message:message,
+
+            language:
+              currentLanguage
+
+          })
+
+        }
+      );
+
 
     const data =
       await response.json();
 
+
     if(!response.ok){
 
       throw new Error(
-        data.error || "AI request failed"
+        data.error ||
+        "AI request failed"
       );
+
     }
 
-    const reply =
+
+    const answer =
       data.reply ||
       "Sorry, I could not answer.";
 
-    heardBox.innerText = reply;
 
-    statusBox.innerText =
-      "🟢 TITAN Active";
+    titanText.textContent =
+      answer;
 
-    speak(reply);
+    pText.textContent =
+      answer;
+
+
+    speak(
+      answer,
+      function(){
+
+        waitingForWake = true;
+
+        statusBox.textContent =
+          "শুনছি—“TITAN” বলুন";
+
+        setTimeout(
+          listen,
+          400
+        );
+
+      }
+    );
+
 
   }catch(error){
 
-    console.error(error);
+    console.error(
+      error
+    );
 
-    statusBox.innerText =
-      "❌ AI connection error";
 
-    heardBox.innerText =
-      "AI server-এর সাথে connection হচ্ছে না।";
+    const answer =
+      isBangla(message)
+        ? "দুঃখিত, AI সার্ভারের সাথে সংযোগ হচ্ছে না।"
+        : "Sorry, I cannot connect to the AI server.";
+
+
+    titanText.textContent =
+      answer;
+
+    pText.textContent =
+      answer;
+
+
+    speak(
+      answer,
+      function(){
+
+        waitingForWake = true;
+
+        setTimeout(
+          listen,
+          400
+        );
+
+      }
+    );
+
   }
+
 }
 
-/* PAGE LOAD */
 
-window.addEventListener("load",function(){
+/* =========================
+   CLOSE POPUP
+========================= */
 
-  setupRecognition();
+$("pClose").onclick =
+  function(){
 
-  statusBox.innerText =
-    "🎤 Start TITAN চাপো";
+    popup.classList.remove("show");
 
-  heardBox.innerText =
-    "প্রথমবার Start TITAN চাপতে হবে।";
+  };
 
-});
+
+/* =========================
+   ORB
+========================= */
+
+$("orb").onclick =
+  function(){
+
+    if(assistantStarted){
+
+      stopAssistant();
+
+    }else{
+
+      startAssistant();
+
+    }
+
+  };
+
+
+/* =========================
+   PAGE LOAD
+========================= */
+
+window.addEventListener(
+  "load",
+  function(){
+
+    setupSpeech();
+
+    statusBox.textContent =
+      "🎤 START TITAN চাপুন";
+
+  }
+);
 
 </script>
 
