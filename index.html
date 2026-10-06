@@ -1,493 +1,131 @@
-<!DOCTYPE html>  <html lang="bn">  
-<head>  
-<meta charset="UTF-8">  
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">  
-<title>TITAN AI V4</title>  <style>  
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}  
-:root{--c:#00e5ff;--c2:#0a6cff;--bg:#02060b}  
-html,body{margin:0;height:100%}  
-body{  
-  background:  
-    radial-gradient(circle at 50% 28%,rgba(0,140,255,.22),transparent 55%),  
-    linear-gradient(rgba(0,229,255,.05) 1px,transparent 1px) 0 0/34px 34px,  
-    linear-gradient(90deg,rgba(0,229,255,.05) 1px,transparent 1px) 0 0/34px 34px,  
-    var(--bg);  
-  color:#fff;font-family:"Segoe UI",Arial,sans-serif;overflow-x:hidden;min-height:100vh;  
-}  
-button{font-family:inherit}  
-  
-/* scan line */  
-body::after{content:"";position:fixed;left:0;right:0;height:120px;top:-120px;background:linear-gradient(transparent,rgba(0,229,255,.07),transparent);animation:scan 6s linear infinite;pointer-events:none;z-index:1}  
-@keyframes scan{to{top:100%}}  
-  
-/* side code columns */  
-.side{position:fixed;top:0;bottom:0;width:78px;overflow:hidden;z-index:0;font-family:"Courier New",monospace;font-size:9.5px;line-height:1.55;color:var(--c);opacity:.38;pointer-events:none;  
-  -webkit-mask-image:linear-gradient(transparent,#000 12%,#000 88%,transparent);mask-image:linear-gradient(transparent,#000 12%,#000 88%,transparent)}  
-.side.l{left:6px;text-align:left}  
-.side.r{right:6px;text-align:right}  
-.side .col{animation:roll 38s linear infinite;white-space:pre}  
-.side.r .col{animation-direction:reverse;animation-duration:46s}  
-@keyframes roll{to{transform:translateY(-50%)}}  
-  
-/* layout */  
-.wrap{position:relative;z-index:2;max-width:520px;margin:0 auto;padding:14px 62px 40px}  
-.top{display:flex;justify-content:space-between;align-items:center;font-size:11px;letter-spacing:2px;color:#7fdcff;font-family:"Courier New",monospace}  
-.top b{color:var(--c)}  
-  
-.orbwrap{position:relative;width:200px;height:200px;margin:26px auto 6px;cursor:pointer}  
-.ring{position:absolute;inset:0;border-radius:50%;border:2px dashed rgba(0,229,255,.55);animation:spin 14s linear infinite}  
-.ring.r2{inset:14px;border:2px solid transparent;border-top-color:var(--c);border-bottom-color:var(--c2);animation:spin 3.5s linear infinite reverse}  
-.ring.r3{inset:30px;border:1px solid rgba(0,229,255,.35);animation:spin 22s linear infinite}  
-@keyframes spin{to{transform:rotate(360deg)}}  
-.core{position:absolute;inset:62px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#aef6ff,var(--c) 45%,var(--c2));box-shadow:0 0 30px var(--c),0 0 90px var(--c2);animation:pulse 2.2s ease-in-out infinite}  
-@keyframes pulse{50%{transform:scale(1.1)}}  
-.off .core{filter:grayscale(1) brightness(.5);box-shadow:none;animation:none}  
-.off .ring{animation-play-state:paused;opacity:.4}  
-  
-h1{font-size:34px;letter-spacing:12px;margin:14px 0 2px;text-align:center;font-weight:600;text-shadow:0 0 18px rgba(0,229,255,.6)}  
-.sub{text-align:center;font-size:11px;letter-spacing:4px;color:#59b9d6;margin-bottom:10px;font-family:"Courier New",monospace}  
-  
-.pill{display:flex;align-items:center;justify-content:center;gap:8px;margin:10px auto 12px;padding:8px 14px;max-width:280px;border:1px solid rgba(0,229,255,.4);border-radius:30px;background:rgba(0,229,255,.07);font-size:13px;color:#aef0ff;text-align:center}  
-.dot{width:9px;height:9px;border-radius:50%;background:#2cff9a;box-shadow:0 0 10px #2cff9a;flex:none}  
-.off .dot{background:#ff5a5a;box-shadow:0 0 10px #ff5a5a}  
-  
-.viz{display:flex;align-items:flex-end;justify-content:center;gap:3px;height:40px;margin:6px 0 12px}  
-.viz i{width:4px;height:4px;border-radius:2px;background:linear-gradient(var(--c),var(--c2));transition:height .08s}  
-  
-.chips{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:6px}  
-.chip{font-size:10.5px;letter-spacing:1px;padding:5px 9px;border:1px solid rgba(0,229,255,.3);border-radius:6px;color:#8fdcf5;font-family:"Courier New",monospace;background:rgba(0,0,0,.35)}  
-.chip b{color:#fff}  
-  
-.box{position:relative;margin-top:12px;padding:14px 16px;background:rgba(6,20,32,.72);border:1px solid rgba(0,229,255,.22);border-radius:12px;backdrop-filter:blur(6px);word-wrap:break-word;line-height:1.55;font-size:15px}  
-.box::before,.box::after{content:"";position:absolute;width:12px;height:12px;border:2px solid var(--c)}  
-.box::before{top:-1px;left:-1px;border-right:0;border-bottom:0;border-radius:12px 0 0 0}  
-.box::after{bottom:-1px;right:-1px;border-left:0;border-top:0;border-radius:0 0 12px 0}  
-.tag{display:block;font-size:10px;letter-spacing:3px;color:var(--c);margin-bottom:4px;font-family:"Courier New",monospace}  
-  
-.hint{margin-top:16px;font-size:12px;color:#6fa3b7;line-height:1.7;text-align:center}  
-  
-/* popup */  
-#popup{position:fixed;inset:0;background:radial-gradient(circle at 50% 35%,rgba(0,90,200,.35),rgba(2,6,11,.97) 70%);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:99;padding:24px;text-align:center}  
-#popup.show{display:flex}  
-#popup .orbwrap{margin-top:0;cursor:default}  
-#popup.listening .core{animation:pulse .7s ease-in-out infinite}  
-#pTitle{font-size:24px;letter-spacing:10px;margin:18px 0 6px}  
-#pUser{color:#70e7ff;min-height:24px;max-width:520px;font-size:15px}  
-#pText{max-width:520px;font-size:19px;line-height:1.55;color:#e2f8ff;min-height:60px;margin-top:6px}  
-#pLink{display:none;margin-top:14px;padding:12px 22px;border-radius:10px;background:var(--c);color:#02060b;text-decoration:none;font-weight:bold}  
-#pClose{margin-top:20px;padding:10px 26px;border-radius:10px;border:1px solid var(--c);background:transparent;color:#fff;font-size:15px}  
-</style>  </head>  <body class="off" id="body">  <div class="side l"><div class="col" id="colL"></div></div>  
-<div class="side r"><div class="col" id="colR"></div></div>  <div class="wrap">    <div class="top"><span>TITAN<b>//</b>CORE V4</span><span id="clock">--:--:--</span></div>    <div class="orbwrap" id="orb" onclick="orbTap()">  
-    <div class="ring"></div><div class="ring r2"></div><div class="ring r3"></div>  
-    <div class="core"></div>  
-  </div>    <h1>TITAN</h1>  
-  <div class="sub">VOICE ASSISTANT</div>    <div class="pill"><span class="dot"></span><span id="status">স্ক্রিনে একবার ট্যাপ করে চালু করুন</span></div>    <div class="viz" id="viz"></div>    <div class="chips">  
-    <span class="chip">MIC <b id="chMic">OFF</b></span>  
-    <span class="chip">CLAP <b id="chClap">OFF</b></span>  
-    <span class="chip">LANG <b id="chLang">AUTO</b></span>  
-  </div>    <div class="box"><span class="tag">YOU</span><span id="userText">—</span></div>  
-  <div class="box"><span class="tag">TITAN</span><span id="titanText">—</span></div>    <div class="hint">  
-    "টাইটান" / "Titan" বলুন অথবা দুইবার হাততালি দিন<br>  
-    বাংলা বা English, যেটায় কথা বলবেন সেটাই বুঝবে<br>  
-    অরবে ট্যাপ করলে বন্ধ/চালু হবে  
-  </div>  
-</div>  <div id="popup">  
-  <div class="orbwrap">  
-    <div class="ring"></div><div class="ring r2"></div><div class="ring r3"></div>  
-    <div class="core"></div>  
-  </div>  
-  <div id="pTitle">TITAN</div>  
-  <div id="pUser"></div>  
-  <div id="pText"></div>  
-  <a id="pLink" target="_blank" rel="noopener">লিংক খুলুন</a>  
-  <button id="pClose" onclick="closePopup()">✕ বন্ধ করুন</button>  
-</div>  <script>  
-  
-const API_URL="https://titan-ai-assistant-kdfn.vercel.app/api/chat";  
-  
-const $=id=>document.getElementById(id);  
-const statusText=$("status"),userText=$("userText"),titanText=$("titanText");  
-const popup=$("popup"),pText=$("pText"),pUser=$("pUser"),pLink=$("pLink"),bodyEl=$("body");  
-  
-let currentLanguage="bn-BD";  
-let active=false,userStopped=false,justStarted=0;  
-let mode="wake";  
-let speaking=false,recRunning=false;  
-let idleTimer=null,sessionTimer=null,wakeLock=null;  
-let gotResult=false;  
-const recLangs=["bn-BD","en-US"];  
-let recIdx=0;  
-  
-function isBn(){return currentLanguage==="bn-BD";}  
-function T(bn,en){return isBn()?bn:en;}  
-function detectLang(t){return /[\u0980-\u09FF]/.test(t)?"bn-BD":"en-US";}  
-function setStatus(t){statusText.innerText=t;}  
-function setLang(l){  
-  currentLanguage=l;  
-  recIdx=recLangs.indexOf(l);  
-  $("chLang").innerText=l==="bn-BD"?"BN":"EN";  
-}  
-  
-/* ---------- HUD decoration ---------- */  
-  
-(function(){  
-  const lines=[  
-    "0x7F3A init()","const titan=new AI();","mic.connect(core);","while(listening){","  wake();","  parse(cmd);","}","await fetch(api);","// neural link","0xA1 0xFF 0x03","if(clap>=2){","  popup.show();","}","speak(reply);","lang=auto();","sys.boot(v4);","[OK] audio.stream","[OK] voice.engine","[OK] net.secure","0x00ff9c sync","for(;;){scan()}","bn_BD | en_US","stack.push(msg);","return answer;","ping 12ms","// hands-free","core.pulse(1.1);","0xDEADBEEF","key=env.SECURE","state:READY"  
-  ];  
-  function fill(el,shift){  
-    let s="";  
-    for(let i=0;i<lines.length;i++){s+=lines[(i+shift)%lines.length]+"\n";}  
-    el.textContent=s+s;  
-  }  
-  fill($("colL"),0);fill($("colR"),11);  
-  
-  const viz=$("viz");  
-  for(let i=0;i<26;i++){viz.appendChild(document.createElement("i"));}  
-  
-  setInterval(function(){$("clock").innerText=new Date().toLocaleTimeString("en-GB");},1000);  
-})();  
-  
-let level=0;  
-setInterval(function(){  
-  const bars=$("viz").children;  
-  const idle=active?4:2;  
-  for(let i=0;i<bars.length;i++){  
-    const wave=Math.abs(Math.sin(Date.now()/260+i*.5));  
-    const h=idle+level*34*(0.35+0.65*wave)+(active?wave*3:0);  
-    bars[i].style.height=Math.min(40,h)+"px";  
-  }  
-  level*=0.8;  
-},70);  
-  
-/* ---------- Speech Recognition ---------- */  
-  
-const SR=window.SpeechRecognition||window.webkitSpeechRecognition;  
-let rec=null;  
-  
-if(SR){  
-  rec=new SR();  
-  rec.continuous=true;  
-  rec.interimResults=false;  
-  
-  rec.onstart=function(){  
-    recRunning=true;  
-    gotResult=false;  
-    $("chMic").innerText="ON";  
-    clearTimeout(sessionTimer);  
-    sessionTimer=setTimeout(function(){  
-      if(!gotResult){try{rec.abort();}catch(e){}}  
-    },mode==="command"?6000:10000);  
-  };  
-  
-  rec.onresult=function(event){  
-    for(let i=event.resultIndex;i<event.results.length;i++){  
-      if(!event.results[i].isFinal)continue;  
-      const text=event.results[i][0].transcript.trim();  
-      if(!text)continue;  
-      gotResult=true;  
-      onHeard(text);  
-    }  
-  };  
-  
-  rec.onerror=function(e){  
-    if(e.error==="not-allowed"||e.error==="service-not-allowed"){  
-      active=false;  
-      setActiveUI(false);  
-      setStatus("মাইক্রোফোনের অনুমতি দিন, তারপর স্ক্রিনে ট্যাপ করুন");  
-    }  
-  };  
-  
-  rec.onend=function(){  
-    recRunning=false;  
-    clearTimeout(sessionTimer);  
-    $("chMic").innerText=active?"IDLE":"OFF";  
-    if(mode==="wake"||!gotResult){recIdx=(recIdx+1)%recLangs.length;}  
-    if((active||mode==="command")&&!speaking){setTimeout(startRec,250);}  
-  };  
-}else{  
-  setStatus("এই browser voice support করে না, Chrome ব্যবহার করুন");  
-}  
-  
-function startRec(){  
-  if(!rec||recRunning||speaking)return;  
-  try{  
-    rec.lang=recLangs[recIdx];  
-    rec.start();  
-  }catch(e){}  
-}  
-  
-function stopRec(){  
-  if(!rec)return;  
-  try{rec.abort();}catch(e){}  
-  recRunning=false;  
-}  
-  
-const WAKE=/titan|tytan|tighten|টাইটান|টাইটেন|টাইটন/i;  
-  
-function onHeard(text){  
-  if(mode==="wake"){  
-    const m=text.match(WAKE);  
-    if(m){  
-      setLang(detectLang(text));  
-      const rest=text.slice(m.index+m[0].length).replace(/^[\s,.:!।-]+/,"");  
-      wake(rest);  
-    }  
-  }else{  
-    setLang(detectLang(text));  
-    handleCommand(text);  
-  }  
-}  
-  
-/* ---------- Wake / Popup ---------- */  
-  
-function wake(rest){  
-  showPopup();  
-  if(rest&&rest.length>1){  
-    setLang(detectLang(rest));  
-    handleCommand(rest);  
-  }else{  
-    mode="command";  
-    pUser.innerText="";  
-    reply(T("জি, বলুন।","Yes, I'm listening."));  
-  }  
-}  
-  
-function showPopup(){  
-  popup.classList.add("show");  
-  pLink.style.display="none";  
-  resetIdle();  
-}  
-  
-function closePopup(){  
-  popup.classList.remove("show","listening");  
-  pUser.innerText="";  
-  pText.innerText="";  
-  mode="wake";  
-  speechSynthesis.cancel();  
-  speaking=false;  
-  clearTimeout(idleTimer);  
-  stopRec();  
-  if(active)setTimeout(startRec,300);  
-}  
-  
-function resetIdle(){  
-  clearTimeout(idleTimer);  
-  idleTimer=setTimeout(closePopup,25000);  
-}  
-  
-/* ---------- Start / stop (hands-free) ---------- */  
-  
-async function startAssistant(){  
-  if(active)return;  
-  active=true;  
-  justStarted=Date.now();  
-  setActiveUI(true);  
-  setStatus(T("চালু হচ্ছে...","Starting..."));  
-  await startClap();  
-  startRec();  
-  requestWake();  
-  setStatus(T("শুনছি... \"টাইটান\" বলুন বা দুইবার হাততালি দিন","Listening... say \"Titan\" or clap twice"));  
-}  
-  
-function stopAssistant(){  
-  active=false;  
-  stopClap();  
-  stopRec();  
-  releaseWake();  
-  setActiveUI(false);  
-  setStatus(T("বন্ধ আছে, চালু করতে অরবে ট্যাপ করুন","Off. Tap the orb to start"));  
-}  
-  
-function setActiveUI(on){  
-  bodyEl.classList.toggle("off",!on);  
-  if(!on){$("chMic").innerText="OFF";$("chClap").innerText="OFF";}  
-}  
-  
-function orbTap(){  
-  if(Date.now()-justStarted<900)return;  
-  if(active){userStopped=true;stopAssistant();}  
-  else{userStopped=false;startAssistant();}  
-}  
-  
-async function requestWake(){  
-  try{if("wakeLock" in navigator){wakeLock=await navigator.wakeLock.request("screen");}}catch(e){}  
-}  
-function releaseWake(){  
-  try{if(wakeLock){wakeLock.release();wakeLock=null;}}catch(e){}  
-}  
-document.addEventListener("visibilitychange",function(){  
-  if(active&&document.visibilityState==="visible"){requestWake();startRec();}  
-});  
-  
-/* first touch anywhere starts everything (browser needs one gesture) */  
-document.addEventListener("pointerdown",function(){  
-  if(audioCtx&&audioCtx.state==="suspended")audioCtx.resume();  
-  if(!active&&!userStopped){startAssistant();}  
-},{capture:true});  
-  
-window.addEventListener("load",function(){  
-  setTimeout(function(){if(!active&&!userStopped)startAssistant();},400);  
-});  
-  
-/* ---------- Double clap + level meter ---------- */  
-  
-let audioCtx=null,analyser=null,micStream=null,clapTimer=null,lastClap=0;  
-  
-async function startClap(){  
-  try{  
-    micStream=await navigator.mediaDevices.getUserMedia({  
-      audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}  
-    });  
-    audioCtx=new (window.AudioContext||window.webkitAudioContext)();  
-    if(audioCtx.state==="suspended")audioCtx.resume();  
-    const src=audioCtx.createMediaStreamSource(micStream);  
-    analyser=audioCtx.createAnalyser();  
-    analyser.fftSize=1024;  
-    src.connect(analyser);  
-    const buf=new Uint8Array(analyser.fftSize);  
-    let lastPeak=0;  
-    $("chClap").innerText="ON";  
-  
-    clapTimer=setInterval(function(){  
-      analyser.getByteTimeDomainData(buf);  
-      let peak=0;  
-      for(let i=0;i<buf.length;i++){  
-        const v=Math.abs(buf[i]-128)/128;  
-        if(v>peak)peak=v;  
-      }  
-      if(peak>level)level=Math.min(1,peak*1.6);  
-      if(speaking||mode!=="wake")return;  
-      const now=Date.now();  
-      if(peak>0.55&&now-lastPeak>150){  
-        lastPeak=now;  
-        if(now-lastClap<900&&now-lastClap>150){  
-          lastClap=0;  
-          wake("");  
-        }else{  
-          lastClap=now;  
-        }  
-      }  
-    },30);  
-  }catch(e){  
-    console.error(e);  
-    $("chClap").innerText="N/A";  
-  }  
-}  
-  
-function stopClap(){  
-  clearInterval(clapTimer);  
-  try{if(micStream)micStream.getTracks().forEach(t=>t.stop());}catch(e){}  
-  try{if(audioCtx)audioCtx.close();}catch(e){}  
-  micStream=null;audioCtx=null;analyser=null;  
-}  
-  
-/* ---------- Commands ---------- */  
-  
-function stripWords(t,list){  
-  let q=t;  
-  list.forEach(w=>{q=q.split(w).join(" ");});  
-  return q.replace(/\s+/g," ").trim();  
-}  
-  
-const CREATOR=/creator|who (made|created|built) you|who is your (maker|owner|father)|তোমার (স্রষ্টা|ক্রিয়েটর|নির্মাতা)|তোমাকে কে (বানিয়েছে|তৈরি করেছে|বানাইছে)|কে (বানিয়েছে|বানাইছে|তৈরি করেছে) তোমা|ক্রিয়েটর|স্রষ্টা|নির্মাতা/i;  
-  
-function handleCommand(text){  
-  resetIdle();  
-  userText.innerText=text;  
-  pUser.innerText=text;  
-  const t=text.toLowerCase();  
-  
-  if(CREATOR.test(t)){  
-    return reply(T("আমার স্রষ্টা নুর নবী।","My creator is Nur Nobi."));  
-  }  
-  
-  if(/youtube|ইউটিউব|ইউ টিউব/.test(t)){  
-    const q=stripWords(t,["youtube","ইউটিউবে","ইউটিউব","ইউ টিউব","open","play","search","for","on","খুলো","খোলো","খুলে দাও","খুল","খোল","চালাও","চালু করো","সার্চ করো","সার্চ","দেখাও"]);  
-    const url=q?"https://www.youtube.com/results?search_query="+encodeURIComponent(q):"https://www.youtube.com";  
-    return openUrl(url,T(q?"ইউটিউবে "+q+" খুঁজছি।":"ইউটিউব খুলছি।",q?"Searching YouTube for "+q+".":"Opening YouTube."));  
-  }  
-  
-  if(/google|গুগল|গূগল/.test(t)){  
-    const q=stripWords(t,["google","গুগলে","গুগল","গূগল","open","search","for","on","খুলো","খোলো","খুলে দাও","খুল","খোল","সার্চ করো","সার্চ"]);  
-    const url=q?"https://www.google.com/search?q="+encodeURIComponent(q):"https://www.google.com";  
-    return openUrl(url,T(q?"গুগলে "+q+" খুঁজছি।":"গুগল খুলছি।",q?"Searching Google for "+q+".":"Opening Google."));  
-  }  
-  
-  if(/chrome|ক্রোম/.test(t)){  
-    return openUrl("https://www.google.com",T("ক্রোম খুলছি।","Opening Chrome."));  
-  }  
-  
-  askTitan(text);  
-}  
-  
-function openUrl(url,msg){  
-  const w=window.open(url,"_blank");  
-  if(!w){  
-    pLink.href=url;  
-    pLink.style.display="inline-block";  
-    reply(msg+T(" নিচের বাটনে চাপুন।"," Tap the button below."));  
-  }else{  
-    reply(msg);  
-  }  
-}  
-  
-async function askTitan(message){  
-  setStatus(T("TITAN চিন্তা করছে...","TITAN is thinking..."));  
-  titanText.innerText=T("চিন্তা করছি...","Thinking...");  
-  pText.innerText=T("চিন্তা করছি...","Thinking...");  
-  try{  
-    const response=await fetch(API_URL,{  
-      method:"POST",  
-      headers:{"Content-Type":"application/json"},  
-      body:JSON.stringify({message:message})  
-    });  
-    const data=await response.json();  
-    if(!response.ok)throw new Error(data.error||"API error");  
-    reply(data.reply);  
-  }catch(error){  
-    console.error(error);  
-    reply(T("দুঃখিত, AI-এর সাথে সংযোগ করা যাচ্ছে না।","Sorry, I cannot connect to the AI.")+" ("+error.message+")");  
-  }  
-}  
-  
-function reply(message){  
-  titanText.innerText=message;  
-  if(popup.classList.contains("show"))pText.innerText=message;  
-  setStatus(active?T("শুনছি...","Listening..."):T("বন্ধ আছে","Off"));  
-  speak(message,function(){  
-    if(popup.classList.contains("show")){  
-      mode="command";  
-      popup.classList.add("listening");  
-      resetIdle();  
-    }  
-  });  
-}  
-  
-/* ---------- Speak ---------- */  
-  
-function speak(message,cb){  
-  speechSynthesis.cancel();  
-  speaking=true;  
-  stopRec();  
-  
-  const speech=new SpeechSynthesisUtterance(message);  
-  speech.lang=/[\u0980-\u09FF]/.test(message)?"bn-BD":"en-US";  
-  speech.rate=.95;  
-  speech.pitch=1;  
-  
-  let finished=false;  
-  function done(){  
-    if(finished)return;  
-    finished=true;  
-    speaking=false;  
-    if(cb)cb();  
-    if(active||mode==="command")setTimeout(startRec,300);  
-  }  
-  speech.onend=done;  
-  speech.onerror=done;  
-  speechSynthesis.speak(speech);  
-  setTimeout(done,Math.max(5000,message.length*180));  
-}  
-  
-</script>  </body>  
-</html>  
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>TITAN AI V5</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--c:#00e5ff;--c2:#0a6cff;--bg:#02060b}
+html,body{margin:0;height:100%}
+body{background:radial-gradient(circle at 50% 28%,rgba(0,140,255,.22),transparent 55%),linear-gradient(rgba(0,229,255,.05) 1px,transparent 1px) 0 0/34px 34px,linear-gradient(90deg,rgba(0,229,255,.05) 1px,transparent 1px) 0 0/34px 34px,var(--bg);color:#fff;font-family:"Segoe UI",Arial,sans-serif;overflow-x:hidden;min-height:100vh}
+body::after{content:"";position:fixed;left:0;right:0;height:120px;top:-120px;background:linear-gradient(transparent,rgba(0,229,255,.07),transparent);animation:scan 6s linear infinite;pointer-events:none;z-index:1}
+@keyframes scan{to{top:100%}}
+.side{position:fixed;top:0;bottom:0;width:72px;overflow:hidden;z-index:0;font:9px/1.55 "Courier New",monospace;color:var(--c);opacity:.28;pointer-events:none;-webkit-mask-image:linear-gradient(transparent,#000 12%,#000 88%,transparent);mask-image:linear-gradient(transparent,#000 12%,#000 88%,transparent)}
+.side.l{left:5px}.side.r{right:5px;text-align:right}.side .col{white-space:pre}
+.wrap{position:relative;z-index:2;max-width:520px;margin:auto;padding:14px 58px 35px}
+.top{display:flex;justify-content:space-between;font:11px "Courier New",monospace;letter-spacing:2px;color:#7fdcff}.top b{color:var(--c)}
+.orbwrap{position:relative;width:190px;height:190px;margin:25px auto 5px;cursor:pointer}
+.ring{position:absolute;inset:0;border-radius:50%;border:2px dashed rgba(0,229,255,.5);animation:spin 14s linear infinite}.ring.r2{inset:14px;border:2px solid transparent;border-top-color:var(--c);border-bottom-color:var(--c2);animation:spin 3.5s linear infinite reverse}.ring.r3{inset:30px;border:1px solid rgba(0,229,255,.35);animation:spin 22s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.core{position:absolute;inset:60px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#aef6ff,var(--c) 45%,var(--c2));box-shadow:0 0 30px var(--c),0 0 90px var(--c2);animation:pulse 2.2s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.1)}}
+.off .core{filter:grayscale(1) brightness(.5);box-shadow:none;animation:none}.off .ring{animation-play-state:paused;opacity:.4}
+h1{font-size:34px;letter-spacing:12px;margin:14px 0 2px;text-align:center;font-weight:600;text-shadow:0 0 18px rgba(0,229,255,.6)}.sub{text-align:center;font-size:11px;letter-spacing:4px;color:#59b9d6;margin-bottom:10px}
+.pill{display:flex;align-items:center;justify-content:center;gap:8px;margin:10px auto 12px;padding:8px 14px;max-width:330px;border:1px solid rgba(0,229,255,.4);border-radius:30px;background:rgba(0,229,255,.07);font-size:13px;color:#aef0ff;text-align:center}.dot{width:9px;height:9px;border-radius:50%;background:#2cff9a;box-shadow:0 0 10px #2cff9a}.off .dot{background:#ff5a5a;box-shadow:0 0 10px #ff5a5a}
+.viz{display:flex;align-items:flex-end;justify-content:center;gap:3px;height:40px;margin:6px 0 12px}.viz i{width:4px;height:4px;border-radius:2px;background:linear-gradient(var(--c),var(--c2))}
+.chips{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}.chip{font:10px "Courier New",monospace;padding:5px 9px;border:1px solid rgba(0,229,255,.3);border-radius:6px;color:#8fdcf5;background:rgba(0,0,0,.35)}.chip b{color:#fff}
+.box{position:relative;margin-top:12px;padding:14px 16px;background:rgba(6,20,32,.72);border:1px solid rgba(0,229,255,.22);border-radius:12px;backdrop-filter:blur(6px);word-wrap:break-word;line-height:1.55;font-size:15px}.tag{display:block;font:10px "Courier New",monospace;letter-spacing:3px;color:var(--c);margin-bottom:4px}
+.hint{margin-top:16px;font-size:12px;color:#6fa3b7;line-height:1.7;text-align:center}
+#popup{position:fixed;inset:0;background:radial-gradient(circle at 50% 35%,rgba(0,90,200,.35),rgba(2,6,11,.97) 70%);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:99;padding:24px;text-align:center}#popup.show{display:flex}#popup .orbwrap{margin:0;width:150px;height:150px;cursor:default}#popup .core{inset:48px}
+#pTitle{font-size:24px;letter-spacing:10px;margin:18px 0 6px}#pUser{color:#70e7ff;min-height:24px;max-width:520px;font-size:15px}#pText{max-width:520px;font-size:19px;line-height:1.55;color:#e2f8ff;min-height:60px;margin-top:6px}#pLink{display:none;margin-top:14px;padding:12px 22px;border-radius:10px;background:var(--c);color:#02060b;text-decoration:none;font-weight:bold}#pClose{margin-top:20px;padding:10px 26px;border-radius:10px;border:1px solid var(--c);background:transparent;color:#fff;font-size:15px}
+</style>
+</head>
+<body class="off" id="body">
+<div class="side l"><div class="col" id="colL"></div></div><div class="side r"><div class="col" id="colR"></div></div>
+<div class="wrap">
+<div class="top"><span>TITAN<b>//</b>CORE V5</span><span id="clock">--:--:--</span></div>
+<div class="orbwrap" id="orb"><div class="ring"></div><div class="ring r2"></div><div class="ring r3"></div><div class="core"></div></div>
+<h1>TITAN</h1><div class="sub">HANDS-FREE AI ASSISTANT</div>
+<div class="pill"><span class="dot"></span><span id="status">TITAN চালু হচ্ছে...</span></div>
+<div class="viz" id="viz"></div>
+<div class="chips"><span class="chip">MIC <b id="chMic">OFF</b></span><span class="chip">CLAP <b id="chClap">OFF</b></span><span class="chip">LANG <b id="chLang">AUTO</b></span></div>
+<div class="box"><span class="tag">YOU</span><span id="userText">—</span></div>
+<div class="box"><span class="tag">TITAN</span><span id="titanText">—</span></div>
+<div class="hint">“TITAN” বলুন অথবা দুইবার হাততালি দিন<br>বাংলা বা English—TITAN নিজেই ভাষা বুঝবে</div>
+</div>
+<div id="popup">
+<div class="orbwrap"><div class="ring"></div><div class="ring r2"></div><div class="ring r3"></div><div class="core"></div></div>
+<div id="pTitle">TITAN</div><div id="pUser"></div><div id="pText"></div><a id="pLink" target="_blank" rel="noopener">লিংক খুলুন</a>
+<button id="pClose">✕ বন্ধ করুন</button>
+</div>
+<script>
+const API_URL="/api/chat";
+const $=id=>document.getElementById(id);
+const statusText=$("status"),userText=$("userText"),titanText=$("titanText"),popup=$("popup"),pText=$("pText"),pUser=$("pUser"),pLink=$("pLink"),bodyEl=$("body");
+let active=false,mode="wake",speaking=false,recRunning=false,currentLanguage="bn-BD",rec=null,audioCtx=null,analyser=null,micStream=null,clapTimer=null,lastClap=0,level=0,justStarted=0;
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+const WAKE=/\b(titan|tytan|tighten)\b|টাইটান|টাইটেন|টাইটন/i;
+const CREATOR=/creator|who\s+(made|created|built)\s+you|who\s+is\s+your\s+(maker|owner|father)|তোমার\s+(স্রষ্টা|ক্রিয়েটর|নির্মাতা)|তোমাকে\s+কে\s+(বানিয়েছে|তৈরি\s+করেছে|বানাইছে)/i;
+function T(bn,en){return currentLanguage==="bn-BD"?bn:en}
+function detectLang(t){return /[\u0980-\u09FF]/.test(t)?"bn-BD":"en-US"}
+function setLang(l){currentLanguage=l;$("chLang").innerText=l==="bn-BD"?"BN":"EN"}
+function setStatus(t){statusText.textContent=t}
+(function(){let lines=["core.init()","voice.auto=true","wakeword=titan","clap=2","lang=auto","api.secure","response.fast","audio.stream","neural.link","state=READY"];$("colL").textContent=(lines.join("\n")+"\n").repeat(8);$("colR").textContent=(lines.slice().reverse().join("\n")+"\n").repeat(8);for(let i=0;i<26;i++)$("viz").appendChild(document.createElement("i"));setInterval(()=>$("clock").textContent=new Date().toLocaleTimeString("en-GB"),1000)})();
+setInterval(()=>{for(let i=0;i<$("viz").children.length;i++){let w=Math.abs(Math.sin(Date.now()/260+i*.5));$("viz").children[i].style.height=Math.min(40,2+level*34*(.35+.65*w)+(active?w*3:0))+"px"}level*=.78},70);
+
+function setupRecognition(){
+ if(!SR){setStatus("Chrome-এ voice recognition ব্যবহার করুন");return}
+ rec=new SR();rec.continuous=true;rec.interimResults=false;rec.maxAlternatives=1;
+ rec.onstart=()=>{recRunning=true;$("chMic").textContent="ON"};
+ rec.onresult=e=>{for(let i=e.resultIndex;i<e.results.length;i++){if(!e.results[i].isFinal)continue;let text=e.results[i][0].transcript.trim();if(text)onHeard(text)}};
+ rec.onerror=e=>{if(e.error==="not-allowed"||e.error==="service-not-allowed")setStatus("Microphone permission দিন")}
+ rec.onend=()=>{recRunning=false;$("chMic").textContent=active?"IDLE":"OFF";if(active&&!speaking)setTimeout(startRec,250)}
+}
+function startRec(){if(!rec||recRunning||speaking||!active)return;try{rec.lang=currentLanguage;rec.start()}catch(e){}}
+function stopRec(){if(rec)try{rec.abort()}catch(e){}recRunning=false}
+function onHeard(text){
+ if(mode==="wake"){let m=text.match(WAKE);if(!m)return;let rest=text.slice(m.index+m[0].length).replace(/^[\s,.:!।-]+/,"");setLang(detectLang(rest||text));wake(rest)}
+ else{setLang(detectLang(text));handleCommand(text)}
+}
+function wake(rest){
+ popup.classList.add("show");pLink.style.display="none";clearTimeout(window.idleTimer);window.idleTimer=setTimeout(closePopup,30000);
+ if(rest&&rest.length>1){handleCommand(rest)}else{mode="command";reply(T("জি, বলুন।","Yes, I'm listening."))}
+}
+function closePopup(){popup.classList.remove("show");pUser.textContent="";pText.textContent="";pLink.style.display="none";mode="wake";speechSynthesis.cancel();speaking=false;clearTimeout(window.idleTimer);if(active)setTimeout(startRec,250)}
+function startAssistant(){
+ if(active)return;active=true;justStarted=Date.now();bodyEl.classList.remove("off");setStatus(T("শুনছি—“TITAN” বলুন বা দুইবার হাততালি দিন","Listening—say “TITAN” or clap twice"));startClap();startRec()
+}
+function stopAssistant(){active=false;stopClap();stopRec();bodyEl.classList.add("off");setStatus(T("বন্ধ","Off"))}
+function requestWake(){try{if("wakeLock"in navigator)navigator.wakeLock.request("screen").catch(()=>{})}catch(e){}}
+async function startClap(){
+ if(!navigator.mediaDevices?.getUserMedia){$("chClap").textContent="N/A";return}
+ try{
+  if(!micStream)micStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
+  if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==="suspended")await audioCtx.resume();
+  const src=audioCtx.createMediaStreamSource(micStream);analyser=audioCtx.createAnalyser();analyser.fftSize=1024;src.connect(analyser);
+  const buf=new Uint8Array(analyser.fftSize);$("chClap").textContent="ON";
+  clearInterval(clapTimer);clapTimer=setInterval(()=>{analyser.getByteTimeDomainData(buf);let peak=0;for(let i=0;i<buf.length;i++)peak=Math.max(peak,Math.abs(buf[i]-128)/128);level=Math.max(level,Math.min(1,peak*1.5));if(speaking||mode!=="wake")return;let now=Date.now();if(peak>.58&&now-lastClap>180){if(now-lastClap<850){lastClap=0;wake("")}else lastClap=now}},35)
+ }catch(e){$("chClap").textContent="N/A"}
+}
+function stopClap(){clearInterval(clapTimer);try{micStream?.getTracks().forEach(t=>t.stop())}catch(e){}try{audioCtx?.close()}catch(e){}micStream=null;audioCtx=null;analyser=null}
+function stripWords(t,list){let q=t;list.forEach(w=>q=q.split(w).join(" "));return q.replace(/\s+/g," ").trim()}
+function handleCommand(text){
+ userText.textContent=text;pUser.textContent=text;clearTimeout(window.idleTimer);window.idleTimer=setTimeout(closePopup,30000);
+ let t=text.toLowerCase();
+ if(CREATOR.test(t))return reply(T("আমার স্রষ্টা নুর নবী।","My creator is Nur Nobi."));
+ if(/youtube|ইউটিউব|ইউ টিউব/.test(t)){let q=stripWords(t,["youtube","ইউটিউবে","ইউটিউব","ইউ টিউব","open","play","search","for","on","খুলো","খোলো","খুলে দাও","খুল","খোল","চালাও","সার্চ করো","সার্চ"]);let url=q?"https://www.youtube.com/results?search_query="+encodeURIComponent(q):"https://www.youtube.com";return openUrl(url,T(q?"ইউটিউবে "+q+" খুঁজছি।":"ইউটিউব খুলছি।",q?"Searching YouTube for "+q+".":"Opening YouTube."))}
+ if(/google|গুগল|গূগল/.test(t)){let q=stripWords(t,["google","গুগলে","গুগল","গূগল","open","search","for","on","খুলো","খোলো","খুলে দাও","খুল","খোল","সার্চ করো","সার্চ"]);let url=q?"https://www.google.com/search?q="+encodeURIComponent(q):"https://www.google.com";return openUrl(url,T(q?"গুগলে "+q+" খুঁজছি।":"গুগল খুলছি।",q?"Searching Google for "+q+".":"Opening Google."))}
+ if(/chrome|ক্রোম/.test(t))return openUrl("https://www.google.com",T("Google খুলছি। Chrome থেকে খুলতে বলেছি।","Opening Google in the browser."));askTitan(text)
+}
+function openUrl(url,msg){let w=window.open(url,"_blank");if(!w){pLink.href=url;pLink.style.display="inline-block";}reply(msg)}
+async function askTitan(message){
+ setStatus(T("TITAN ভাবছে...","TITAN is thinking..."));titanText.textContent=T("ভাবছি...","Thinking...");pText.textContent=T("ভাবছি...","Thinking...");
+ try{let r=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message,language:currentLanguage})});let d=await r.json();if(!r.ok)throw Error(d.error||"API error");reply(d.reply)}
+ catch(e){reply(T("দুঃখিত, AI সার্ভারের সাথে সংযোগ হচ্ছে না।","Sorry, I can't connect to the AI server."))}
+}
+function reply(message){
+ titanText.textContent=message;pText.textContent=message;setStatus(T("উত্তর দিচ্ছি...","Speaking..."));speak(message)
+}
+function speak(message){
+ speechSynthesis.cancel();speaking=true;stopRec();let u=new SpeechSynthesisUtterance(message);u.lang=/[\u0980-\u09FF]/.test(message)?"bn-BD":"en-US";u.rate=.98;u.pitch=1;
+ let done=false;let finish=()=>{if(done)return;done=true;speaking=false;mode="command";popup.classList.add("show");setStatus(T("শুনছি...","Listening..."));if(active)setTimeout(startRec,250)};u.onend=finish;u.onerror=finish;speechSynthesis.speak(u);setTimeout(finish,Math.max(5000,message.length*120))
+}
+$("pClose").onclick=closePopup;
+$("orb").onclick=()=>active?stopAssistant():startAssistant();
+document.addEventListener("visibilitychange",()=>{if(active&&document.visibilityState==="visible"){requestWake();startRec()}});
+window.addEventListener("load",()=>{setupRecognition();setTimeout(()=>{startAssistant();requestWake()},500)});
+</script>
+</body>
+</html>
