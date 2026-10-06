@@ -1,52 +1,69 @@
 export default async function handler(req, res) {
-if (req.method !== "POST") {
-return res.status(405).json({ error: "Method not allowed" });
-}
+  // CORS
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
 
-try {
-const { message } = req.body || {};
+  if (req.method === "OPTIONS") {
+    return res.status(204).end();
+  }
 
-if (!message) {  
-  return res.status(400).json({ error: "Message is required" });  
-}  
+  if (req.method !== "POST") {
+    return res.status(405).json({
+      error: "Method not allowed"
+    });
+  }
 
-const response = await fetch("https://api.openai.com/v1/responses", {  
-  method: "POST",  
-  headers: {  
-    "Content-Type": "application/json",  
-    "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`  
-  },  
-  body: JSON.stringify({  
-    model: "gpt-6-luna",  
-    instructions:  
-      "You are TITAN, a helpful AI voice assistant. Reply in the same language as the user. If the user speaks Bangla, reply in Bangla. If English, reply in English. Keep answers clear and concise.",  
-    input: message,  
-    reasoning: { effort: "low" }  
-  })  
-});  
+  // API key check
+  if (!process.env.OPENAI_API_KEY) {
+    return res.status(500).json({
+      error: "OPENAI_API_KEY is not configured on Vercel"
+    });
+  }
 
-const data = await response.json();  
+  try {
+    const { message } = req.body || {};
 
-if (!response.ok) {  
-  return res.status(response.status).json({  
-    error: data.error?.message || "OpenAI API error"  
-  });  
-}  
+    if (!message) {
+      return res.status(400).json({
+        error: "Message is required"
+      });
+    }
 
-// The raw REST response has no `output_text` field (only the SDKs add it),  
-// so collect the text from the output array ourselves.  
-const reply =  
-  data.output_text ||  
-  (data.output || [])  
-    .flatMap((item) => item.content || [])  
-    .filter((part) => part.type === "output_text")  
-    .map((part) => part.text)  
-    .join("")  
-    .trim();  
+    const response = await fetch("https://api.openai.com/v1/responses", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: "gpt-5-mini",
+        instructions:
+          "You are TITAN, a friendly voice AI assistant created by Nur Nobi. Answer briefly and naturally. If the user speaks Bangla, answer in Bangla. If English, answer in English. If asked who created you, answer: My creator is Nur Nobi.",
+        input: message,
+        max_output_tokens: 300
+      })
+    });
 
-return res.status(200).json({ reply });
+    const data = await response.json();
 
-} catch (error) {
-return res.status(500).json({ error: "Server error" });
-}
+    if (!response.ok) {
+      console.error(data);
+
+      return res.status(response.status).json({
+        error: data.error?.message || "OpenAI request failed"
+      });
+    }
+
+    return res.status(200).json({
+      reply: data.output_text || "Sorry, I could not answer."
+    });
+
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      error: "AI request failed"
+    });
+  }
 }
