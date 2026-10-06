@@ -2,1742 +2,474 @@
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>TITAN AI V6</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TITAN AI</title>
 
 <style>
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent
-}
-
-:root{
-  --c:#00e5ff;
-  --c2:#0a6cff;
-  --bg:#02060b
-}
-
-html,body{
-  margin:0;
-  height:100%
-}
+*{box-sizing:border-box}
 
 body{
-  background:
-  radial-gradient(circle at 50% 28%,rgba(0,140,255,.22),transparent 55%),
-  linear-gradient(rgba(0,229,255,.05) 1px,transparent 1px) 0 0/34px 34px,
-  linear-gradient(90deg,rgba(0,229,255,.05) 1px,transparent 1px) 0 0/34px 34px,
-  var(--bg);
-  color:#fff;
-  font-family:"Segoe UI",Arial,sans-serif;
-  overflow-x:hidden;
-  min-height:100vh
-}
-
-body::after{
-  content:"";
-  position:fixed;
-  left:0;
-  right:0;
-  height:120px;
-  top:-120px;
-  background:linear-gradient(
-    transparent,
-    rgba(0,229,255,.07),
-    transparent
-  );
-  animation:scan 6s linear infinite;
-  pointer-events:none;
-  z-index:1
-}
-
-@keyframes scan{
-  to{top:100%}
-}
-
-.side{
-  position:fixed;
-  top:0;
-  bottom:0;
-  width:72px;
-  overflow:hidden;
-  z-index:0;
-  font:9px/1.55 "Courier New",monospace;
-  color:var(--c);
-  opacity:.28;
-  pointer-events:none;
-  -webkit-mask-image:linear-gradient(transparent,#000 12%,#000 88%,transparent);
-  mask-image:linear-gradient(transparent,#000 12%,#000 88%,transparent)
-}
-
-.side.l{left:5px}
-.side.r{right:5px;text-align:right}
-.side .col{white-space:pre}
-
-.wrap{
-  position:relative;
-  z-index:2;
-  max-width:520px;
-  margin:auto;
-  padding:14px 58px 35px
-}
-
-.top{
+  margin:0;
+  height:100vh;
+  background:#02060b;
+  color:white;
+  font-family:Arial,sans-serif;
   display:flex;
-  justify-content:space-between;
-  font:11px "Courier New",monospace;
-  letter-spacing:2px;
-  color:#7fdcff
+  justify-content:center;
+  align-items:center;
 }
 
-.top b{color:var(--c)}
-
-.orbwrap{
-  position:relative;
-  width:190px;
-  height:190px;
-  margin:25px auto 5px;
-  cursor:pointer
-}
-
-.ring{
-  position:absolute;
-  inset:0;
-  border-radius:50%;
-  border:2px dashed rgba(0,229,255,.5);
-  animation:spin 14s linear infinite
-}
-
-.ring.r2{
-  inset:14px;
-  border:2px solid transparent;
-  border-top-color:var(--c);
-  border-bottom-color:var(--c2);
-  animation:spin 3.5s linear infinite reverse
-}
-
-.ring.r3{
-  inset:30px;
-  border:1px solid rgba(0,229,255,.35);
-  animation:spin 22s linear infinite
-}
-
-@keyframes spin{
-  to{transform:rotate(360deg)}
-}
-
-.core{
-  position:absolute;
-  inset:60px;
-  border-radius:50%;
-  background:radial-gradient(
-    circle at 35% 30%,
-    #aef6ff,
-    var(--c) 45%,
-    var(--c2)
-  );
-  box-shadow:
-    0 0 30px var(--c),
-    0 0 90px var(--c2);
-  animation:pulse 2.2s ease-in-out infinite
-}
-
-@keyframes pulse{
-  50%{transform:scale(1.1)}
-}
-
-.off .core{
-  filter:grayscale(1) brightness(.5);
-  box-shadow:none;
-  animation:none
-}
-
-.off .ring{
-  animation-play-state:paused;
-  opacity:.4
+.box{
+  width:92%;
+  max-width:600px;
+  padding:35px 20px;
+  text-align:center;
+  border:1px solid #18334a;
+  border-radius:25px;
+  background:#071019;
+  box-shadow:0 0 40px #001a2b;
 }
 
 h1{
-  font-size:34px;
-  letter-spacing:12px;
-  margin:14px 0 2px;
-  text-align:center;
-  font-weight:600;
-  text-shadow:0 0 18px rgba(0,229,255,.6)
+  font-size:48px;
+  letter-spacing:8px;
+  margin:10px 0;
 }
 
-.sub{
-  text-align:center;
-  font-size:11px;
-  letter-spacing:4px;
-  color:#59b9d6;
-  margin-bottom:10px
+#status{
+  margin:20px 0;
+  color:#00eaff;
+  font-size:18px;
 }
 
-.pill{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:8px;
-  margin:10px auto 12px;
-  padding:8px 14px;
-  max-width:360px;
-  border:1px solid rgba(0,229,255,.4);
+#heard{
+  min-height:50px;
+  margin:20px 0;
+  color:#aaa;
+}
+
+button{
+  border:0;
   border-radius:30px;
-  background:rgba(0,229,255,.07);
-  font-size:13px;
-  color:#aef0ff;
-  text-align:center
-}
-
-.dot{
-  width:9px;
-  height:9px;
-  border-radius:50%;
-  background:#2cff9a;
-  box-shadow:0 0 10px #2cff9a
-}
-
-.off .dot{
-  background:#ff5a5a;
-  box-shadow:0 0 10px #ff5a5a
-}
-
-.viz{
-  display:flex;
-  align-items:flex-end;
-  justify-content:center;
-  gap:3px;
-  height:40px;
-  margin:6px 0 12px
-}
-
-.viz i{
-  width:4px;
-  height:4px;
-  border-radius:2px;
-  background:linear-gradient(var(--c),var(--c2))
-}
-
-.chips{
-  display:flex;
-  gap:8px;
-  justify-content:center;
-  flex-wrap:wrap
-}
-
-.chip{
-  font:10px "Courier New",monospace;
-  padding:5px 9px;
-  border:1px solid rgba(0,229,255,.3);
-  border-radius:6px;
-  color:#8fdcf5;
-  background:rgba(0,0,0,.35)
-}
-
-.chip b{color:#fff}
-
-.box{
-  position:relative;
-  margin-top:12px;
-  padding:14px 16px;
-  background:rgba(6,20,32,.72);
-  border:1px solid rgba(0,229,255,.22);
-  border-radius:12px;
-  backdrop-filter:blur(6px);
-  word-wrap:break-word;
-  line-height:1.55;
-  font-size:15px
-}
-
-.tag{
-  display:block;
-  font:10px "Courier New",monospace;
-  letter-spacing:3px;
-  color:var(--c);
-  margin-bottom:4px
-}
-
-.hint{
-  margin-top:16px;
-  font-size:12px;
-  color:#6fa3b7;
-  line-height:1.7;
-  text-align:center
-}
-
-#popup{
-  position:fixed;
-  inset:0;
-  background:
-    radial-gradient(
-      circle at 50% 35%,
-      rgba(0,90,200,.35),
-      rgba(2,6,11,.97) 70%
-    );
-  display:none;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  z-index:99;
-  padding:24px;
-  text-align:center
-}
-
-#popup.show{display:flex}
-
-#popup .orbwrap{
-  margin:0;
-  width:150px;
-  height:150px;
-  cursor:default
-}
-
-#popup .core{inset:48px}
-
-#pTitle{
-  font-size:24px;
-  letter-spacing:10px;
-  margin:18px 0 6px
-}
-
-#pUser{
-  color:#70e7ff;
-  min-height:24px;
-  max-width:520px;
-  font-size:15px
-}
-
-#pText{
-  max-width:520px;
-  font-size:19px;
-  line-height:1.55;
-  color:#e2f8ff;
-  min-height:60px;
-  margin-top:6px
-}
-
-#pLink{
-  display:none;
-  margin-top:14px;
-  padding:12px 22px;
-  border-radius:10px;
-  background:var(--c);
-  color:#02060b;
-  text-decoration:none;
-  font-weight:bold
-}
-
-#pClose{
-  margin-top:20px;
-  padding:10px 26px;
-  border-radius:10px;
-  border:1px solid var(--c);
-  background:transparent;
-  color:#fff;
-  font-size:15px
+  padding:15px 28px;
+  font-size:17px;
+  background:#00d9ff;
+  color:#001018;
+  font-weight:bold;
 }
 </style>
 </head>
 
-<body class="off" id="body">
+<body>
 
-<div class="side l">
-  <div class="col" id="colL"></div>
-</div>
-
-<div class="side r">
-  <div class="col" id="colR"></div>
-</div>
-
-<div class="wrap">
-
-  <div class="top">
-    <span>TITAN<b>//</b>CORE V6</span>
-    <span id="clock">--:--:--</span>
-  </div>
-
-  <div class="orbwrap" id="orb">
-    <div class="ring"></div>
-    <div class="ring r2"></div>
-    <div class="ring r3"></div>
-    <div class="core"></div>
-  </div>
-
+<div class="box">
   <h1>TITAN</h1>
 
-  <div class="sub">
-    HANDS-FREE AI ASSISTANT
+  <div id="status">Starting...</div>
+
+  <div id="heard">
+    Microphone চালু হচ্ছে...
   </div>
 
-  <div class="pill">
-    <span class="dot"></span>
-    <span id="status">TITAN চালু হচ্ছে...</span>
-  </div>
-
-  <div class="viz" id="viz"></div>
-
-  <div class="chips">
-    <span class="chip">
-      MIC <b id="chMic">OFF</b>
-    </span>
-
-    <span class="chip">
-      CLAP <b id="chClap">OFF</b>
-    </span>
-
-    <span class="chip">
-      LANG <b id="chLang">AUTO</b>
-    </span>
-  </div>
-
-  <div class="box">
-    <span class="tag">YOU</span>
-    <span id="userText">—</span>
-  </div>
-
-  <div class="box">
-    <span class="tag">TITAN</span>
-    <span id="titanText">—</span>
-  </div>
-
-  <div class="hint">
-    “TITAN” বলুন অথবা দুইবার হাততালি দিন<br>
-    বাংলা বা English—TITAN নিজেই ভাষা বুঝবে
-  </div>
-
-</div>
-
-<div id="popup">
-
-  <div class="orbwrap">
-    <div class="ring"></div>
-    <div class="ring r2"></div>
-    <div class="ring r3"></div>
-    <div class="core"></div>
-  </div>
-
-  <div id="pTitle">TITAN</div>
-
-  <div id="pUser"></div>
-
-  <div id="pText"></div>
-
-  <a
-    id="pLink"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    লিংক খুলুন
-  </a>
-
-  <button id="pClose">
-    ✕ বন্ধ করুন
+  <button onclick="startListening()">
+    🎤 Start TITAN
   </button>
-
 </div>
 
 <script>
 
 const API_URL = "/api/chat";
 
-const $ = id => document.getElementById(id);
+const statusBox = document.getElementById("status");
+const heardBox = document.getElementById("heard");
 
-const statusText = $("status");
-const userText = $("userText");
-const titanText = $("titanText");
-
-const popup = $("popup");
-const pText = $("pText");
-const pUser = $("pUser");
-const pLink = $("pLink");
-
-const bodyEl = $("body");
-
+let recognition = null;
+let listening = false;
 let active = false;
-let mode = "wake";
 
-let speaking = false;
-let recRunning = false;
+function isBangla(text){
+  return /[\u0980-\u09FF]/.test(text);
+}
 
-let currentLanguage =
-  navigator.language &&
-  navigator.language.toLowerCase().startsWith("bn")
-    ? "bn-BD"
-    : "en-US";
+function detectLanguage(text){
+  return isBangla(text) ? "bn-BD" : "en-US";
+}
 
-let rec = null;
+/* SPEAK */
 
-let audioCtx = null;
-let analyser = null;
-let micStream = null;
-let clapTimer = null;
+function speak(text){
 
-let lastClap = 0;
-let level = 0;
-
-const SR =
-  window.SpeechRecognition ||
-  window.webkitSpeechRecognition;
-
-const WAKE =
-  /\b(titan|tytan|tighten)\b|টাইটান|টাইটেন|টাইটন/i;
-
-const CREATOR =
-  /creator|who\s+(made|created|built)\s+you|who\s+is\s+your\s+(maker|owner)|তোমার\s+(স্রষ্টা|ক্রিয়েটর|নির্মাতা)|তোমাকে\s+কে\s+(বানিয়েছে|তৈরি\s+করেছে|বানাইছে)/i;
-
-
-/* -------------------------
-   LANGUAGE
-------------------------- */
-
-function detectLang(text){
-
-  if(/[\u0980-\u09FF]/.test(text)){
-    return "bn-BD";
+  if(!("speechSynthesis" in window)){
+    return;
   }
 
-  return "en-US";
+  speechSynthesis.cancel();
+
+  const u = new SpeechSynthesisUtterance(text);
+
+  u.lang = isBangla(text) ? "bn-BD" : "en-US";
+  u.rate = 1;
+  u.pitch = 1;
+
+  speechSynthesis.speak(u);
 }
 
-function setLang(lang){
-
-  currentLanguage = lang;
-
-  $("chLang").textContent =
-    lang === "bn-BD" ? "BN" : "EN";
-}
-
-function T(bn,en){
-
-  return currentLanguage === "bn-BD"
-    ? bn
-    : en;
-}
-
-
-/* -------------------------
-   STATUS
-------------------------- */
-
-function setStatus(text){
-  statusText.textContent = text;
-}
-
-
-/* -------------------------
-   DECORATION
-------------------------- */
-
-(function(){
-
-  const lines = [
-    "core.init()",
-    "voice.auto=true",
-    "wakeword=titan",
-    "clap=2",
-    "lang=auto",
-    "api.secure",
-    "response.fast",
-    "audio.stream",
-    "neural.link",
-    "state=READY"
-  ];
-
-  $("colL").textContent =
-    (lines.join("\n") + "\n").repeat(8);
-
-  $("colR").textContent =
-    (lines.slice().reverse().join("\n") + "\n").repeat(8);
-
-  for(let i=0;i<26;i++){
-
-    $("viz").appendChild(
-      document.createElement("i")
-    );
-
-  }
-
-  setInterval(()=>{
-
-    $("clock").textContent =
-      new Date().toLocaleTimeString("en-GB");
-
-  },1000);
-
-})();
-
-
-setInterval(()=>{
-
-  const bars = $("viz").children;
-
-  for(let i=0;i<bars.length;i++){
-
-    const wave =
-      Math.abs(
-        Math.sin(
-          Date.now()/260+i*.5
-        )
-      );
-
-    bars[i].style.height =
-      Math.min(
-        40,
-        2 + level*34*(.35+.65*wave)
-      ) + "px";
-
-  }
-
-  level *= .78;
-
-},70);
-
-
-/* -------------------------
-   SPEECH RECOGNITION
-------------------------- */
+/* SPEECH SETUP */
 
 function setupRecognition(){
 
-  if(!SR){
+  const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
 
-    setStatus(
-      "এই browser voice recognition support করে না"
-    );
+  if(!SpeechRecognition){
+
+    statusBox.innerText =
+      "❌ Voice support নেই";
+
+    heardBox.innerText =
+      "Chrome browser দিয়ে চেষ্টা করো";
 
     return;
   }
 
-  rec = new SR();
+  recognition = new SpeechRecognition();
 
-  rec.continuous = true;
-  rec.interimResults = false;
-  rec.maxAlternatives = 1;
+  recognition.continuous = true;
+  recognition.interimResults = true;
 
-  rec.onstart = ()=>{
+  recognition.lang = "en-US";
 
-    recRunning = true;
+  recognition.onstart = function(){
 
-    $("chMic").textContent = "ON";
+    listening = true;
 
+    statusBox.innerText =
+      "🎤 Listening...";
+
+    heardBox.innerText =
+      "TITAN বলো...";
   };
 
+  recognition.onresult = function(event){
 
-  rec.onresult = event => {
+    let finalText = "";
+    let interimText = "";
 
     for(
-      let i=event.resultIndex;
-      i<event.results.length;
+      let i = event.resultIndex;
+      i < event.results.length;
       i++
     ){
 
-      if(!event.results[i].isFinal)
-        continue;
-
       const text =
-        event.results[i][0].transcript.trim();
+        event.results[i][0].transcript;
 
-      if(text){
-
-        console.log("TITAN heard:",text);
-
-        onHeard(text);
-
+      if(event.results[i].isFinal){
+        finalText += text;
+      }else{
+        interimText += text;
       }
-
     }
+
+    heardBox.innerText =
+      finalText || interimText;
+
+    if(finalText){
+
+      recognition.lang =
+        detectLanguage(finalText);
+
+      processVoice(finalText.trim());
+    }
+  };
+
+  recognition.onerror = function(event){
+
+    console.log("Speech error:",event.error);
+
+    if(event.error === "not-allowed"){
+
+      statusBox.innerText =
+        "❌ Microphone blocked";
+
+      heardBox.innerText =
+        "Browser settings থেকে Microphone Allow করো";
+
+      return;
+    }
+
+    statusBox.innerText =
+      "⚠️ Voice error";
 
   };
 
+  recognition.onend = function(){
 
-  rec.onerror = event => {
+    listening = false;
 
-    console.log(
-      "Speech error:",
-      event.error
-    );
+    if(window.titanListening){
 
-    if(
-      event.error === "not-allowed" ||
-      event.error === "service-not-allowed"
-    ){
+      setTimeout(function(){
 
-      setStatus(
-        "Microphone permission দিন"
-      );
+        try{
+          recognition.start();
+        }catch(e){}
 
+      },700);
     }
-
-    if(event.error === "network"){
-
-      setStatus(
-        "Voice recognition network সমস্যা"
-      );
-
-    }
-
   };
-
-
-  rec.onend = ()=>{
-
-    recRunning = false;
-
-    $("chMic").textContent =
-      active ? "IDLE" : "OFF";
-
-    if(
-      active &&
-      !speaking
-    ){
-
-      setTimeout(
-        startRec,
-        500
-      );
-
-    }
-
-  };
-
 }
 
+/* START */
 
-function startRec(){
+function startListening(){
 
-  if(
-    !rec ||
-    recRunning ||
-    speaking ||
-    !active
-  ){
+  if(!recognition){
+    setupRecognition();
+  }
 
+  if(!recognition){
     return;
   }
 
+  window.titanListening = true;
+
+  active = false;
+
   try{
 
-    /*
-      Browser-এর language preference ব্যবহার করছি।
-      User-এর transcript পাওয়ার পর
-      Bangla/English detect করা হবে।
-    */
+    recognition.start();
 
-    rec.lang =
-      currentLanguage || "bn-BD";
-
-    rec.start();
+    statusBox.innerText =
+      "🎤 Listening...";
 
   }catch(error){
 
     console.log(error);
 
   }
-
 }
 
+/* VOICE COMMAND */
 
-function stopRec(){
+function processVoice(text){
 
-  if(!rec)
-    return;
+  const lower = text.toLowerCase();
 
-  try{
+  const titanWords =
+    lower.includes("titan") ||
+    lower.includes("tytan") ||
+    lower.includes("টাইটান") ||
+    lower.includes("টাইটেন") ||
+    lower.includes("টাইটন");
 
-    rec.abort();
+  /* TITAN না বলা পর্যন্ত অপেক্ষা */
 
-  }catch(e){}
+  if(!active){
 
-  recRunning = false;
+    if(titanWords){
 
-}
+      active = true;
 
+      statusBox.innerText =
+        "🟢 TITAN Active";
 
-/* -------------------------
-   HEARD
-------------------------- */
-
-function onHeard(text){
-
-  console.log(
-    "Speech:",
-    text
-  );
-
-  if(mode === "wake"){
-
-    const match =
-      text.match(WAKE);
-
-    if(!match){
-
-      return;
+      speak(
+        isBangla(text)
+        ? "জি, বলুন।"
+        : "Yes, tell me."
+      );
     }
 
-    const afterWake =
-      text
-      .slice(
-        match.index +
-        match[0].length
-      )
-      .replace(
-        /^[\s,.:!।-]+/,
-        ""
-      )
-      .trim();
-
-    setLang(
-      detectLang(
-        afterWake || text
-      )
-    );
-
-    wake(afterWake);
-
     return;
   }
 
-
-  setLang(
-    detectLang(text)
-  );
-
-  handleCommand(text);
-
-}
-
-
-/* -------------------------
-   WAKE
-------------------------- */
-
-function wake(rest){
-
-  popup.classList.add("show");
-
-  pLink.style.display = "none";
-
-  clearTimeout(
-    window.idleTimer
-  );
-
-  window.idleTimer =
-    setTimeout(
-      closePopup,
-      30000
-    );
-
-
-  if(rest && rest.length > 1){
-
-    handleCommand(rest);
-
-  }else{
-
-    mode = "command";
-
-    reply(
-      T(
-        "জি, বলুন।",
-        "Yes, I'm listening."
-      )
-    );
-
-  }
-
-}
-
-
-/* -------------------------
-   CLOSE
-------------------------- */
-
-function closePopup(){
-
-  popup.classList.remove("show");
-
-  pUser.textContent = "";
-  pText.textContent = "";
-
-  pLink.style.display = "none";
-
-  mode = "wake";
-
-  speechSynthesis.cancel();
-
-  speaking = false;
-
-  clearTimeout(
-    window.idleTimer
-  );
-
-  if(active){
-
-    setTimeout(
-      startRec,
-      500
-    );
-
-  }
-
-}
-
-
-/* -------------------------
-   START
-------------------------- */
-
-function startAssistant(){
-
-  if(active)
-    return;
-
-  active = true;
-
-  bodyEl.classList.remove("off");
-
-  setStatus(
-    T(
-      "শুনছি—“TITAN” বলুন",
-      "Listening—say “TITAN”"
-    )
-  );
-
-  startClap();
-
-  startRec();
-
-}
-
-
-/* -------------------------
-   STOP
-------------------------- */
-
-function stopAssistant(){
-
-  active = false;
-
-  stopClap();
-
-  stopRec();
-
-  bodyEl.classList.add("off");
-
-  setStatus(
-    T(
-      "বন্ধ",
-      "Off"
-    )
-  );
-
-}
-
-
-/* -------------------------
-   SCREEN WAKE
-------------------------- */
-
-function requestWake(){
-
-  try{
-
-    if(
-      "wakeLock" in navigator
-    ){
-
-      navigator.wakeLock
-        .request("screen")
-        .catch(()=>{});
-
-    }
-
-  }catch(e){}
-
-}
-
-
-/* -------------------------
-   DOUBLE CLAP
-------------------------- */
-
-async function startClap(){
+  /* TITAN */
 
   if(
-    !navigator.mediaDevices ||
-    !navigator.mediaDevices.getUserMedia
+    lower === "titan" ||
+    lower === "tytan" ||
+    lower === "টাইটান" ||
+    lower === "টাইটেন" ||
+    lower === "টাইটন"
   ){
 
-    $("chClap").textContent =
-      "N/A";
+    speak(
+      isBangla(text)
+      ? "জি, বলুন।"
+      : "Yes, tell me."
+    );
 
     return;
   }
-
-  try{
-
-    if(!micStream){
-
-      micStream =
-        await navigator.mediaDevices
-        .getUserMedia({
-
-          audio:{
-            echoCancellation:false,
-            noiseSuppression:false,
-            autoGainControl:false
-
-          }
-
-        });
-
-    }
-
-
-    if(!audioCtx){
-
-      audioCtx =
-        new(
-          window.AudioContext ||
-          window.webkitAudioContext
-        )();
-
-    }
-
-
-    if(audioCtx.state === "suspended"){
-
-      await audioCtx.resume();
-
-    }
-
-
-    const source =
-      audioCtx.createMediaStreamSource(
-        micStream
-      );
-
-    analyser =
-      audioCtx.createAnalyser();
-
-    analyser.fftSize = 1024;
-
-    source.connect(analyser);
-
-    const buffer =
-      new Uint8Array(
-        analyser.fftSize
-      );
-
-    $("chClap").textContent = "ON";
-
-
-    clearInterval(clapTimer);
-
-    clapTimer =
-      setInterval(()=>{
-
-        if(!analyser)
-          return;
-
-        analyser.getByteTimeDomainData(
-          buffer
-        );
-
-        let peak = 0;
-
-        for(
-          let i=0;
-          i<buffer.length;
-          i++
-        ){
-
-          peak =
-            Math.max(
-              peak,
-              Math.abs(
-                buffer[i]-128
-              ) / 128
-            );
-
-        }
-
-
-        level =
-          Math.max(
-            level,
-            Math.min(
-              1,
-              peak*1.5
-            )
-          );
-
-
-        if(
-          speaking ||
-          mode !== "wake"
-        ){
-
-          return;
-        }
-
-
-        const now =
-          Date.now();
-
-
-        if(
-          peak > .58 &&
-          now-lastClap > 180
-        ){
-
-          if(
-            now-lastClap < 850
-          ){
-
-            lastClap = 0;
-
-            wake("");
-
-          }else{
-
-            lastClap = now;
-
-          }
-
-        }
-
-      },35);
-
-
-  }catch(error){
-
-    console.log(
-      "Clap error:",
-      error
-    );
-
-    $("chClap").textContent =
-      "N/A";
-
-  }
-
-}
-
-
-function stopClap(){
-
-  clearInterval(clapTimer);
-
-  try{
-
-    micStream
-      ?.getTracks()
-      .forEach(
-        track => track.stop()
-      );
-
-  }catch(e){}
-
-
-  try{
-
-    audioCtx?.close();
-
-  }catch(e){}
-
-
-  micStream = null;
-  audioCtx = null;
-  analyser = null;
-
-}
-
-
-/* -------------------------
-   REMOVE WORDS
-------------------------- */
-
-function stripWords(text, words){
-
-  let result = text;
-
-  words.forEach(
-    word => {
-
-      result =
-        result.split(word).join(" ");
-
-    }
-  );
-
-  return result
-    .replace(/\s+/g," ")
-    .trim();
-
-}
-
-
-/* -------------------------
-   YOUTUBE SEARCH
-------------------------- */
-
-function youtubeSearch(text){
-
-  let query =
-    text;
-
-
-  query =
-    stripWords(
-      query,
-      [
-
-        "youtube",
-        "ইউটিউব",
-        "ইউটিউবে",
-        "ইউ টিউব",
-
-        "open youtube",
-        "youtube open",
-
-        "search youtube",
-        "youtube search",
-
-        "search",
-        "find",
-        "play",
-
-        "খুলো",
-        "খোলো",
-        "খুলে দাও",
-        "খুল",
-        "খোল",
-
-        "চালাও",
-
-        "সার্চ করো",
-        "সার্চ",
-        "খুঁজো",
-        "খুঁজে দাও"
-
-      ]
-    );
-
-
-  if(!query){
-
-    query =
-      "";
-
-  }
-
-
-  const url =
-    query
-      ? "https://www.youtube.com/results?search_query="+
-        encodeURIComponent(query)
-      : "https://www.youtube.com";
-
-
-  const message =
-    currentLanguage === "bn-BD"
-
-      ? query
-        ? "YouTube-এ "+query+" খুঁজছি।"
-        : "YouTube খুলছি।"
-
-      : query
-        ? "Searching YouTube for "+query+"."
-        : "Opening YouTube.";
-
-
-  openUrl(
-    url,
-    message
-  );
-
-}
-
-
-/* -------------------------
-   GOOGLE SEARCH
-------------------------- */
-
-function googleSearch(text){
-
-  let query =
-    stripWords(
-      text,
-      [
-
-        "google",
-        "গুগল",
-        "গুগলে",
-        "গূগল",
-
-        "search",
-        "find",
-        "open",
-
-        "খুলো",
-        "খোলো",
-        "খুলে দাও",
-        "খুল",
-        "খোল",
-
-        "সার্চ করো",
-        "সার্চ",
-        "খুঁজো",
-        "খুঁজে দাও"
-
-      ]
-    );
-
-
-  const url =
-    query
-
-      ? "https://www.google.com/search?q="+
-        encodeURIComponent(query)
-
-      : "https://www.google.com";
-
-
-  const message =
-    currentLanguage === "bn-BD"
-
-      ? query
-        ? "গুগলে "+query+" খুঁজছি।"
-        : "গুগল খুলছি।"
-
-      : query
-        ? "Searching Google for "+query+"."
-        : "Opening Google.";
-
-
-  openUrl(
-    url,
-    message
-  );
-
-}
-
-
-/* -------------------------
-   COMMAND HANDLER
-------------------------- */
-
-function handleCommand(text){
-
-  userText.textContent = text;
-
-  pUser.textContent = text;
-
-  clearTimeout(
-    window.idleTimer
-  );
-
-  window.idleTimer =
-    setTimeout(
-      closePopup,
-      30000
-    );
-
-
-  const lower =
-    text.toLowerCase();
-
 
   /* CREATOR */
 
-  if(CREATOR.test(lower)){
+  if(
+    lower.includes("who created you") ||
+    lower.includes("who is your creator") ||
+    lower.includes("তোমাকে কে বানিয়েছে") ||
+    lower.includes("তোমার creator কে") ||
+    lower.includes("কে বানিয়েছে")
+  ){
 
-    reply(
-      T(
-        "আমার স্রষ্টা নুর নবী।",
-        "My creator is Nur Nobi."
-      )
-    );
+    const answer =
+      isBangla(text)
+      ? "আমার creator হলো Nur Nobi।"
+      : "My creator is Nur Nobi.";
+
+    heardBox.innerText = answer;
+    speak(answer);
 
     return;
   }
-
 
   /* YOUTUBE */
 
   if(
-    /youtube|ইউটিউব|ইউ টিউব/i
-      .test(text)
+    lower.includes("youtube") ||
+    lower.includes("ইউটিউব")
   ){
 
-    youtubeSearch(text);
+    let query = text
+      .replace(/titan/gi,"")
+      .replace(/tytan/gi,"")
+      .replace(/youtube/gi,"")
+      .replace(/ইউটিউব/g,"")
+      .replace(/search/gi,"")
+      .replace(/খুঁজো/g,"")
+      .replace(/সার্চ/g,"")
+      .trim();
+
+    if(!query){
+      query = "trending videos";
+    }
+
+    window.open(
+      "https://www.youtube.com/results?search_query=" +
+      encodeURIComponent(query),
+      "_blank"
+    );
+
+    speak(
+      isBangla(text)
+      ? "ইউটিউবে সার্চ করছি।"
+      : "Searching YouTube."
+    );
 
     return;
   }
-
 
   /* GOOGLE */
 
   if(
-    /google|গুগল|গূগল/i
-      .test(text)
+    lower.includes("google") ||
+    lower.includes("গুগল")
   ){
 
-    googleSearch(text);
+    let query = text
+      .replace(/titan/gi,"")
+      .replace(/google/gi,"")
+      .replace(/গুগল/g,"")
+      .replace(/search/gi,"")
+      .replace(/খুঁজো/g,"")
+      .replace(/সার্চ/g,"")
+      .trim();
 
-    return;
-  }
+    if(!query){
+      query = "Google";
+    }
 
-
-  /* CHROME */
-
-  if(
-    /chrome|ক্রোম/i
-      .test(text)
-  ){
-
-    openUrl(
-      "https://www.google.com",
-      T(
-        "ব্রাউজারে Google খুলছি।",
-        "Opening Google in the browser."
-      )
-    );
-
-    return;
-  }
-
-
-  /* NORMAL AI */
-
-  askTitan(text);
-
-}
-
-
-/* -------------------------
-   OPEN URL
-------------------------- */
-
-function openUrl(url,message){
-
-  const newWindow =
     window.open(
-      url,
+      "https://www.google.com/search?q=" +
+      encodeURIComponent(query),
       "_blank"
     );
 
+    speak(
+      isBangla(text)
+      ? "গুগলে সার্চ করছি।"
+      : "Searching Google."
+    );
 
-  if(!newWindow){
-
-    pLink.href = url;
-
-    pLink.style.display =
-      "inline-block";
-
+    return;
   }
 
+  /* AI */
 
-  reply(message);
-
+  askAI(text);
 }
 
+/* AI */
 
-/* -------------------------
-   AI
-------------------------- */
+async function askAI(message){
 
-async function askTitan(message){
-
-  setStatus(
-    T(
-      "TITAN ভাবছে...",
-      "TITAN is thinking..."
-    )
-  );
-
-  titanText.textContent =
-    T(
-      "ভাবছি...",
-      "Thinking..."
-    );
-
-  pText.textContent =
-    T(
-      "ভাবছি...",
-      "Thinking..."
-    );
-
+  statusBox.innerText =
+    "🤖 TITAN thinking...";
 
   try{
 
     const response =
-      await fetch(
-        API_URL,
-        {
-          method:"POST",
+      await fetch(API_URL,{
+        method:"POST",
 
-          headers:{
-            "Content-Type":
-              "application/json"
-          },
+        headers:{
+          "Content-Type":"application/json"
+        },
 
-          body:JSON.stringify({
-
-            message:message,
-
-            language:
-              currentLanguage
-
-          })
-
-        }
-      );
-
+        body:JSON.stringify({
+          message:message,
+          language:detectLanguage(message)
+        })
+      });
 
     const data =
       await response.json();
 
-
     if(!response.ok){
 
       throw new Error(
-        data.error ||
-        "API error"
+        data.error || "AI request failed"
       );
-
     }
 
-
-    reply(
+    const reply =
       data.reply ||
-      T(
-        "দুঃখিত, কোনো উত্তর পাওয়া যায়নি।",
-        "Sorry, I could not answer."
-      )
-    );
+      "Sorry, I could not answer.";
 
+    heardBox.innerText = reply;
+
+    statusBox.innerText =
+      "🟢 TITAN Active";
+
+    speak(reply);
 
   }catch(error){
 
-    console.error(
-      "AI error:",
-      error
-    );
+    console.error(error);
 
+    statusBox.innerText =
+      "❌ AI connection error";
 
-    reply(
-      T(
-        "দুঃখিত, AI সার্ভারের সাথে সংযোগ হচ্ছে না।",
-        "Sorry, I can't connect to the AI server."
-      )
-    );
-
+    heardBox.innerText =
+      "AI server-এর সাথে connection হচ্ছে না।";
   }
-
 }
 
+/* PAGE LOAD */
 
-/* -------------------------
-   REPLY
-------------------------- */
+window.addEventListener("load",function(){
 
-function reply(message){
+  setupRecognition();
 
-  titanText.textContent =
-    message;
+  statusBox.innerText =
+    "🎤 Start TITAN চাপো";
 
-  pText.textContent =
-    message;
+  heardBox.innerText =
+    "প্রথমবার Start TITAN চাপতে হবে।";
 
-  setStatus(
-    T(
-      "উত্তর দিচ্ছি...",
-      "Speaking..."
-    )
-  );
-
-  speak(message);
-
-}
-
-
-/* -------------------------
-   SPEAK
-------------------------- */
-
-function speak(message){
-
-  if(!("speechSynthesis" in window)){
-
-    speaking = false;
-
-    mode = "command";
-
-    if(active)
-      setTimeout(startRec,500);
-
-    return;
-  }
-
-
-  speechSynthesis.cancel();
-
-  speaking = true;
-
-  stopRec();
-
-
-  const utterance =
-    new SpeechSynthesisUtterance(
-      message
-    );
-
-
-  utterance.lang =
-    /[\u0980-\u09FF]/.test(message)
-      ? "bn-BD"
-      : "en-US";
-
-
-  utterance.rate = .98;
-  utterance.pitch = 1;
-
-
-  let finished = false;
-
-
-  function finish(){
-
-    if(finished)
-      return;
-
-    finished = true;
-
-    speaking = false;
-
-    mode = "command";
-
-    popup.classList.add("show");
-
-    setStatus(
-      T(
-        "শুনছি...",
-        "Listening..."
-      )
-    );
-
-
-    if(active){
-
-      setTimeout(
-        startRec,
-        500
-      );
-
-    }
-
-  }
-
-
-  utterance.onend = finish;
-
-  utterance.onerror = finish;
-
-
-  speechSynthesis.speak(
-    utterance
-  );
-
-
-  setTimeout(
-    finish,
-    Math.max(
-      6000,
-      message.length*130
-    )
-  );
-
-}
-
-
-/* -------------------------
-   BUTTONS
-------------------------- */
-
-$("pClose").onclick =
-  closePopup;
-
-
-$("orb").onclick = ()=>{
-
-  if(active){
-
-    stopAssistant();
-
-  }else{
-
-    startAssistant();
-
-  }
-
-};
-
-
-/* -------------------------
-   VISIBILITY
-------------------------- */
-
-document.addEventListener(
-  "visibilitychange",
-  ()=>{
-
-    if(
-      active &&
-      document.visibilityState ===
-      "visible"
-    ){
-
-      requestWake();
-
-      setTimeout(
-        startRec,
-        500
-      );
-
-    }
-
-  }
-);
-
-
-/* -------------------------
-   PAGE LOAD
-------------------------- */
-
-window.addEventListener(
-  "load",
-  ()=>{
-
-    setupRecognition();
-
-    /*
-      Browser প্রথমবার microphone
-      permission চাইতে পারে।
-    */
-
-    setTimeout(
-      ()=>{
-        startAssistant();
-        requestWake();
-      },
-      1000
-    );
-
-  }
-);
+});
 
 </script>
 
